@@ -25,7 +25,7 @@ class AuthStoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:50', 'unique:users'],
-            'password' => ['required', 'confirmed', $this->isPrecognitive() ? Password::defaults() : Password::min(5)]
+            'password' => ['required', 'confirmed', $this->isPrecognitive() ? Password::defaults() : Password::min(8)]
         ];
     }
 }

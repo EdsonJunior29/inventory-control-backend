@@ -62,4 +62,5 @@ class AuthController extends Controller
             Response::HTTP_NO_CONTENT
         );
     }
+
 }

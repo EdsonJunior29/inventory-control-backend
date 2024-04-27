@@ -26,4 +26,16 @@ class AuthLoginUserRequest extends FormRequest
             'password' => ['required', 'string', 'min:8']
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'email.required' => 'Field is required',
+            'email.string' => 'The email field must be a string',
+            'email.email' => 'The email field must be a valid email address',
+            'password.required' => 'The password field is mandatory',
+            'password.string' => 'The password field must be a string',
+            'password.min' => 'The password field must be at least :min characters',
+        ];
+    }
 }

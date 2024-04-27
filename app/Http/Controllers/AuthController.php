@@ -18,17 +18,12 @@ class AuthController extends Controller
     {
         $request->validated($request->all());
 
-        $credencials = [
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ];
+        $user = User::where('email', $request->email)->first();
 
-        if(!Auth::attempt($request->only($credencials))) 
+        if(!$user || !Hash::check($request->password, $user->password)) 
         {
             return $this->error('', 'Credentials do not match', Response::HTTP_UNAUTHORIZED);
         }
-
-        $user = User::where('email', $request->email)->first();
 
         return $this->success([
             'User' => $user,
@@ -61,6 +56,11 @@ class AuthController extends Controller
             'You have successfuly been logged out and your token has been deleted.',
             Response::HTTP_NO_CONTENT
         );
+    }
+
+    public function me()
+    {
+        return $this->success(Auth::user()->get(), 'success');
     }
 
 }

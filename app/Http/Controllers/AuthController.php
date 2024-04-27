@@ -23,7 +23,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password)
         ];
 
-        if(Auth::attempt($request->only($credencials))) 
+        if(!Auth::attempt($request->only($credencials))) 
         {
             return $this->error('', 'Credentials do not match', Response::HTTP_UNAUTHORIZED);
         }

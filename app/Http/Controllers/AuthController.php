@@ -6,9 +6,12 @@ use App\Http\Requests\AuthLoginUserRequest;
 use App\Http\Requests\AuthStoreUserRequest;
 use App\Models\User;
 use App\Traits\HttpResponses;
+use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmail;
+use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmailInputData;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Infra\User\GetUser;
 
 class AuthController extends Controller
 {
@@ -17,8 +20,10 @@ class AuthController extends Controller
     public function login(AuthLoginUserRequest $request)
     {
         $request->validated($request->all());
-
-        $user = User::where('email', $request->email)->first();
+    
+        $getUserByEmailInputData = new GetUserByEmailInputData($request->email);
+        $userCase = new GetUserByEmail(new GetUser());
+        $user = $userCase->execute($getUserByEmailInputData);
 
         if(!$user || !Hash::check($request->password, $user->password)) 
         {

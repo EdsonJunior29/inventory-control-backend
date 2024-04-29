@@ -2,7 +2,7 @@
 
 namespace App\Domain\Repository;
 
-interface Repository
+interface DefaultRepository
 {
     
 }

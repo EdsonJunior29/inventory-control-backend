@@ -2,8 +2,8 @@
 
 namespace App\Domain\UseCase\User\GetUserByEmail;
 
-use App\Models\User as ModelsUser;
 use App\Domain\Repository\GetUserRepository;
+use App\Models\User as ModelsUser;
 
 class GetUserByEmail
 {
@@ -15,7 +15,7 @@ class GetUserByEmail
        $this->repo = $userRepository;
     }
 
-    public function execute(GetUserByEmailInputData $inputData) : ModelsUser
+    public function execute(GetUserByEmailInputData $inputData) : ?ModelsUser
     {   
         return $this->repo->getUserByEmail($inputData->email);
     }

@@ -20,7 +20,7 @@ class LoginUserService
         $this->userRepository = $userRepository;
     }
 
-    public function userLogin(array $userData) : User
+    public function userLogin(array $userData) : ?User
     {
         $getUserByEmailInputData = new GetUserByEmailInputData($userData['email']);
         $userCase = new GetUserByEmail(new UserRepository());

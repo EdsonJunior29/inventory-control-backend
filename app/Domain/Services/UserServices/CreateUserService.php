@@ -27,8 +27,8 @@ class CreateUserService
             $userInputData = new CreateUserInputData($userData['name'], $userData['email'],  Hash::make($userData['password']));
             $createUser = new CreateUser(new UserRepository());
             $user = $createUser->execute($userInputData);
-        } catch (Exception) {
-            throw new CreateUserException();
+        } catch (Exception $e) {
+            throw new CreateUserException($e->getMessage());
         }
 
         return $user;

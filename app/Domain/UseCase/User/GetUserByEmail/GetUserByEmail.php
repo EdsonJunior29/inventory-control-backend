@@ -2,7 +2,7 @@
 
 namespace App\Domain\UseCase\User\GetUserByEmail;
 
-use App\Domain\Repository\GetUserRepository;
+use App\Domain\IRepository\IUserRepository;
 use App\Models\User as ModelsUser;
 
 class GetUserByEmail
@@ -10,7 +10,7 @@ class GetUserByEmail
 
     protected $repo;
 
-    public function __construct(GetUserRepository $userRepository)
+    public function __construct(IUserRepository $userRepository)
     {
        $this->repo = $userRepository;
     }

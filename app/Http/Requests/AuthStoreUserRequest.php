@@ -25,7 +25,7 @@ class AuthStoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:50', 'unique:users'],
-            'password' => ['required', 'confirmed', $this->isPrecognitive() ? Password::defaults() : Password::min(8)]
+            'password' => ['required', 'confirmed', Password::defaults()]
         ];
     }
 
@@ -41,7 +41,6 @@ class AuthStoreUserRequest extends FormRequest
             'email.unique' => 'The email has already been taken.',
             'password.required' => 'The password field is required.',
             'password.confirmed' => 'The password confirmation does not match.',
-            'password.min' => 'The password must be at least :min characters.',
         ];
     }
 }

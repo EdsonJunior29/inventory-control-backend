@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Exception\CreateUserException;
+use App\Domain\Exception\UnauthorizedUserException;
+use App\Domain\Services\UserServices\CreateUserService;
+use App\Domain\Services\UserServices\LoginUserService;
 use App\Http\Requests\AuthLoginUserRequest;
 use App\Http\Requests\AuthStoreUserRequest;
-use App\Models\User;
 use App\Traits\HttpResponses;
-use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmail;
-use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmailInputData;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Infra\User\GetUser;
+use App\Infra\User\UserRepository;
 
 class AuthController extends Controller
 {
@@ -20,16 +20,14 @@ class AuthController extends Controller
     public function login(AuthLoginUserRequest $request)
     {
         $request->validated($request->all());
-    
-        $getUserByEmailInputData = new GetUserByEmailInputData($request->email);
-        $userCase = new GetUserByEmail(new GetUser());
-        $user = $userCase->execute($getUserByEmailInputData);
 
-        if(!$user || !Hash::check($request->password, $user->password)) 
-        {
-            return $this->error('', 'Credentials do not match', Response::HTTP_UNAUTHORIZED);
+        try {    
+            $userService = new LoginUserService(new UserRepository());
+            $user = $userService->userLogin($request->all());
+        } catch (UnauthorizedUserException $ex) {
+            return $this->error('', $ex->getMessage(), $ex->getCode());
         }
-
+       
         return $this->success([
             'User' => $user,
             'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
@@ -40,12 +38,13 @@ class AuthController extends Controller
     {
         $request->validated($request->all());
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
+        try {
+            $userService = new CreateUserService(new UserRepository());
+            $user = $userService->createUser($request->all());
+        } catch (CreateUserException $ex) {
+            return $this->error('', $ex->getMessage(), $ex->getCode());
+        }
+     
         return $this->success([
             'User' => $user,
             'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
@@ -65,7 +64,12 @@ class AuthController extends Controller
 
     public function me()
     {
-        return $this->success(Auth::user()->get(), 'success');
+        $user = Auth::user();
+
+        if(!$user) {
+            return $this->error('', 'User not found', Response::HTTP_NOT_FOUND);
+        }
+        return $this->success($user, 'Success');
     }
 
 }

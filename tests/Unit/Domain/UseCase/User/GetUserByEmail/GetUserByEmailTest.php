@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\UseCase\User\GetUserByEmail;
 
-use App\Domain\Repository\GetUserRepository;
-use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmail;
-use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmailInputData;
 use App\Models\User;
 use PHPUnit\Framework\TestCase;
+use App\Domain\IRepository\IUserRepository;
+use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmail;
+use App\Domain\UseCase\User\GetUserByEmail\GetUserByEmailInputData;
 
 class GetUserByEmailTest extends TestCase
 {
     public function test_execute_return_user(): void
     {
-        //Mock GetRepository
-        $userRepositoryMock = $this->createMock(GetUserRepository::class);
+        $userRepositoryMock = $this->createMock(IUserRepository::class);
 
-        // Simulando o retorno do método getUserByEmail
         $userRepositoryMock->expects($this->once())
             ->method('getUserByEmail')
             ->willReturn(new User([
@@ -40,10 +38,8 @@ class GetUserByEmailTest extends TestCase
 
     public function test_execute_return_null_if_user_not_found(): void
     {
-        // Cria um mock para GetUserRepository
-        $userRepositoryMock = $this->createMock(GetUserRepository::class);
+        $userRepositoryMock = $this->createMock(IUserRepository::class);
 
-        // Define o comportamento esperado para o método getUserByEmail
         $userRepositoryMock->expects($this->once())
             ->method('getUserByEmail')
             ->willReturn(new User());

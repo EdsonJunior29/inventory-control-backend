@@ -7,10 +7,11 @@ namespace Tests\Unit\Domain\Services;
 use Exception;
 use Tests\TestCase;
 use App\Models\User;
-use App\Infra\User\UserRepository;
 use App\Domain\Exception\CreateUserException;
+use App\Domain\IRepository\IUserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Services\UserServices\CreateUserService;
+use App\Models\Role;
 
 # php artisan test --filter=CreateUserServiceTest
 class CreateUserServiceTest extends TestCase
@@ -26,25 +27,22 @@ class CreateUserServiceTest extends TestCase
     # php artisan test --filter=CreateUserServiceTest::test_createUser_successfully
     public function test_createUser_successfully()
     {
-        $userRepositoryMock = $this->createMock(UserRepository::class);
+        $userRepositoryMock = $this->createMock(IUserRepository::class);
 
         $userRepositoryMock
             ->method("createUser")
-            ->willReturn(new User([
-                "name"=> "John Doe",
-                "email" => "john@example.com",
-                "updated_at" => "2024-05-19T00:02:05.000000Z",
-                "created_at" => "2024-05-19T00:02:05.000000Z",
-                "id" => 1,
-            ])
+            ->willReturn(new User([])
         );
 
         $userService = new CreateUserService($userRepositoryMock);
 
+        $role = Role::factory()->create(["name" => "Admin"]);
+    
         $userData = [
             "name" => "John Doe",
             "email" => "john@example.com",
-            "password" => "password123"
+            "password" => "password123",
+            "role_name" => $role->name
         ];
 
         $user = $userService->createUser($userData);
@@ -58,7 +56,7 @@ class CreateUserServiceTest extends TestCase
     # php artisan test --filter=CreateUserServiceTest::test_createUser_throws_exception_on_failure
     public function test_createUser_throws_exception_on_failure(): void
     {
-       $userRepositoryMock = $this->createMock(UserRepository::class);
+       $userRepositoryMock = $this->createMock(IUserRepository::class);
 
        $userRepositoryMock
             ->method("createUser")

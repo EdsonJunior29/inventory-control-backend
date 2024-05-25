@@ -24,6 +24,8 @@ class UserRepository implements IUserRepository
 
     public function getUserByEmail(string $userEmail) : ?User
     {
-        return User::where('email', $userEmail)->first();
+        return User::where('email', $userEmail)
+            ->with('roles')
+            ->first();
     }
 }

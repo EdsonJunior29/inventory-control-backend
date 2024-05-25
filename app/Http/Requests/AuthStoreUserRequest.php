@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\PasswordRule;
+use App\Rules\ProfileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -26,7 +27,8 @@ class AuthStoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:50', 'unique:users'],
-            'password' => ['required', 'confirmed', Password::defaults(), new PasswordRule]
+            'password' => ['required', 'confirmed', Password::defaults(), new PasswordRule],
+            'role_name' => [new ProfileRule]
         ];
     }
 

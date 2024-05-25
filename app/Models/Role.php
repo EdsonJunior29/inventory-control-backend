@@ -22,7 +22,7 @@ class Role extends Authenticatable
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'roles_users', 'users_id', 'roles_id');
     }
 
 }

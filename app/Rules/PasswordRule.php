@@ -46,7 +46,7 @@ class PasswordRule implements ValidationRule
 
     private function containsSpecialCharacter($value)
     {
-        return preg_match('/[^a-zA-ZO-9]/', $value);
+        return preg_match('/[a-zA-Z0-9_]/', $value);
     }
 
     private function containsSequentialNumber($value)

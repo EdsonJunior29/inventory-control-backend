@@ -11,7 +11,7 @@ use App\Domain\Exception\CreateUserException;
 use App\Domain\IRepository\IUserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Services\UserServices\CreateUserService;
-use App\Models\Role;
+use App\Models\Profile;
 
 # php artisan test --filter=CreateUserServiceTest
 class CreateUserServiceTest extends TestCase
@@ -36,13 +36,13 @@ class CreateUserServiceTest extends TestCase
 
         $userService = new CreateUserService($userRepositoryMock);
 
-        $role = Role::factory()->create(["name" => "Admin"]);
+        $profile = Profile::factory()->create(["name" => "Admin"]);
     
         $userData = [
             "name" => "John Doe",
             "email" => "john@example.com",
             "password" => "password123",
-            "role_name" => $role->name
+            "profile_name" => $profile->name
         ];
 
         $user = $userService->createUser($userData);

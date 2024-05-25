@@ -28,7 +28,7 @@ class AuthStoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:50', 'unique:users'],
             'password' => ['required', 'confirmed', Password::defaults(), new PasswordRule],
-            'role_name' => [new ProfileRule]
+            'profile_name' => [new ProfileRule]
         ];
     }
 

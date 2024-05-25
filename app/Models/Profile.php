@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Role extends Authenticatable
+class Profile extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
@@ -22,7 +22,7 @@ class Role extends Authenticatable
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'roles_users', 'users_id', 'roles_id');
+        return $this->belongsToMany(User::class, 'profiles_users', 'users_id', 'profiles_id');
     }
 
 }

@@ -16,7 +16,7 @@ class CreateUser
 
     public function execute(CreateUserInputData $inputData): ?User
     {
-        return $this->repo->createUser($inputData->name, $inputData->email, $inputData->password, $inputData->roleType);
+        return $this->repo->createUser($inputData->name, $inputData->email, $inputData->password, $inputData->profileType);
     } 
 
 }

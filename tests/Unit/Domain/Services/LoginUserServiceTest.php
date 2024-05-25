@@ -20,7 +20,7 @@ class LoginUserServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seed('RolesAndUsersSeeder');
+        $this->seed('ProfilesAndUsersSeeder');
     }
 
     # php artisan test --filter=LoginUserServiceTest::test_userLogin_returns_user_on_success

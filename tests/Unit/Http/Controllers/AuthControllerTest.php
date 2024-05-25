@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
+# php artisan test --filter=AuthControllerTest
 class AuthControllerTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
@@ -22,6 +23,7 @@ class AuthControllerTest extends TestCase
         $this->seed('ProfilesAndUsersSeeder');
     }
 
+    # php artisan test --filter=AuthControllerTest::test_login_success
     public function test_login_success()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
@@ -52,6 +54,7 @@ class AuthControllerTest extends TestCase
         );
     }
 
+    # php artisan test --filter=AuthControllerTest::test_login_throw_unauthorized_user_exception
     public function test_login_throw_unauthorized_user_exception()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
@@ -77,5 +80,44 @@ class AuthControllerTest extends TestCase
                 'data' => '',
             ]
         );
-    }    
+    }
+
+    # php artisan test --filter=AuthControllerTest::test_register_user_with_success
+    public function test_register_user_with_success()
+    {
+        $adminUser = User::where('email', 'admin@example.com')->first();
+
+        $loggedInUser = $this->postJson(route('auth.login'), [
+            'email' => $adminUser->email,
+            'password' => 'Teste2@145',
+        ]);
+
+        $loggedInUserToken = $loggedInUser->json()['data']['token'];
+
+        $response = $this->withHeaders([
+                'Authorization' => 'Bearer ' . $loggedInUserToken
+            ])->postJson(route('auth.register'), [
+                "name" => "Edson Junior",
+                "email" => "edsonjos61@gmail.com",
+                "password" => "Teste2@145",
+                "password_confirmation" => "Teste2@145",
+                "profile_name" => "Admin"
+            ]
+        );
+        
+        $response->assertStatus(Response::HTTP_CREATED)
+            ->assertJsonStructure([
+                'message',
+                'data' => [
+                    'User' => [
+                        'name',
+                        'email',
+                        'updated_at',
+                        'created_at',
+                        'id',
+                    ],
+                ],
+            ]
+        );
+    }
 }

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Infra\User\UserRepository;
 use App\Models\User;
 use Exception;
+use Throwable;
 
 class CreateUserService
 {
@@ -35,10 +36,8 @@ class CreateUserService
 
             $createUser = new CreateUser(new UserRepository());
             $user = $createUser->execute($userInputData);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new CreateUserException($e->getMessage());
-        } catch (UserProfilesNotFound $userProfilesNotFound) {
-            throw $userProfilesNotFound;
         }
 
         return $user;

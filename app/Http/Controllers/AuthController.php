@@ -40,12 +40,12 @@ class AuthController extends Controller
 
         try {
             $userService = new CreateUserService(new UserRepository());
-            $userService->createUser($request->all());
+            $user = $userService->createUser($request->all());
         } catch (CreateUserException $ex) {
             return $this->error('', $ex->getMessage(), $ex->getCode());
         }
      
-        return $this->success([], 'User created successfully',  Response::HTTP_CREATED);
+        return $this->success(['User' => $user], 'User created successfully',  Response::HTTP_CREATED);
     }
 
     public function logout()

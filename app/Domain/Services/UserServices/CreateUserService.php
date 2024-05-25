@@ -7,7 +7,7 @@ use App\Domain\Exception\UserProfilesNotFound;
 use App\Domain\IRepository\IUserRepository;
 use App\Domain\UseCase\User\CreateUser\CreateUser;
 use App\Domain\UseCase\User\CreateUser\CreateUserInputData;
-use App\Enums\RoleType;
+use App\Enums\Profiles;
 use Illuminate\Support\Facades\Hash;
 use App\Infra\User\UserRepository;
 use App\Models\User;
@@ -30,7 +30,7 @@ class CreateUserService
                 $userData['name'],
                 $userData['email'],
                 Hash::make($userData['password']),
-                $this->validationRoleType($userData['role_name'])
+                $this->validationProfileType($userData['profile_name'])
             );
 
             $createUser = new CreateUser(new UserRepository());
@@ -44,17 +44,17 @@ class CreateUserService
         return $user;
     }
 
-    public function validationRoleType(string $roleName): RoleType
+    public function validationProfileType(string $profileName): Profiles
     {
-        switch ($roleName) {
+        switch ($profileName) {
             case 'Admin':
-                return RoleType::ADMIN;
+                return Profiles::ADMIN;
                 break;
             case 'Colabs':
-                return RoleType::COLABS;
+                return Profiles::COLABS;
                 break;
             case 'Colabs':
-                return RoleType::CLIENT;
+                return Profiles::CLIENT;
                 break;
             default:
                 throw new UserProfilesNotFound();

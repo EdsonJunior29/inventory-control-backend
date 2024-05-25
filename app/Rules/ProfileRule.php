@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Role;
+use App\Models\Profile;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -22,12 +22,12 @@ class ProfileRule implements ValidationRule
 
     private function findRule($value) : bool
     {
-        return Role::where('name', $value)->exists();
+        return Profile::where('name', $value)->exists();
     }
 
 
     public function message()
     {
-        return 'The specified role name does not exist.';
+        return 'The specified profile name does not exist.';
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum RoleType: int
+enum Profiles: int
 {
     case ADMIN = 1;
     case CLIENT = 2;

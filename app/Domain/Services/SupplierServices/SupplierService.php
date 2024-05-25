@@ -5,8 +5,8 @@ namespace App\Domain\Services\SupplierServices;
 use App\Domain\Exception\EmptyDataException;
 use App\Domain\Exception\QueryExecutionException;
 use App\Domain\IRepository\ISupplierRepository;
-use App\Domain\UseCase\Supplier\GetAllSupplier\GetAllSupplier;
-use App\Infra\User\SupplierRepository;
+use App\Domain\UseCase\Supplier\GetSuppliers\GetAllSupplier;
+use App\Infra\Supplier\SupplierRepository;
 use Illuminate\Database\QueryException;
 
 class SupplierService
@@ -21,7 +21,7 @@ class SupplierService
     public function GetAllSupliers()
     {
         try {
-            $getAllSuppliers = new GetAllSupplier(new SupplierRepository);
+            $getAllSuppliers = new GetAllSupplier(new SupplierRepository());
             $suppliers = $getAllSuppliers->execute();
 
             if($suppliers->isEmpty()) {

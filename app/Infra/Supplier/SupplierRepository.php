@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Infra\User;
+namespace App\Infra\Supplier;
 
 use App\Domain\IRepository\ISupplierRepository;
 use App\Models\Supplier;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SupplierRepository implements ISupplierRepository
 {
-    public function getAllSupplier()
+    public function getAllSupplier() : LengthAwarePaginator
     {
-        return Supplier::all()->paginate(10);
+        return Supplier::paginate(5);
     }
 }

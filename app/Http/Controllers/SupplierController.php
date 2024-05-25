@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Exception\EmptyDataException;
 use App\Domain\Services\SupplierServices\SupplierService;
-use App\Infra\User\SupplierRepository;
+use App\Infra\Supplier\SupplierRepository;
 use App\Traits\HttpResponses;
 use Illuminate\Database\QueryException;
 

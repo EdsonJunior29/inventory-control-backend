@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\UseCase\Supplier\GetAllSupplier;
+namespace App\Domain\UseCase\Supplier\GetSuppliers;
 
 use App\Domain\IRepository\ISupplierRepository;
 

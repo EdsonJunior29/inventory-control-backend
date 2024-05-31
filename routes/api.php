@@ -12,7 +12,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::group(['prefix' => 'supplier'] , function () {
-        Route::get('/all-suplliers', [SupplierController::class, 'getAllSuppliers']);
+        Route::get('/all-suplliers', [SupplierController::class, 'getAllSuppliers'])->name('suppliers.getAll');
     });
 });
 

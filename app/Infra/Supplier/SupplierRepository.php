@@ -10,6 +10,6 @@ class SupplierRepository implements ISupplierRepository
 {
     public function getAllSupplier() : LengthAwarePaginator
     {
-        return Supplier::paginate(5);
+        return Supplier::select(['id', 'name'])->paginate(5);
     }
 }

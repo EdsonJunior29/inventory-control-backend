@@ -8,6 +8,7 @@ use App\Domain\IRepository\ISupplierRepository;
 use App\Domain\UseCase\Supplier\GetSuppliers\GetAllSupplier;
 use App\Infra\Supplier\SupplierRepository;
 use Illuminate\Database\QueryException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SupplierService
 {
@@ -18,7 +19,7 @@ class SupplierService
         $this->supplierRepository = $getAllSupplierRepository;
     }
 
-    public function GetAllSupliers()
+    public function getAllSupliers() : LengthAwarePaginator
     {
         try {
             $getAllSuppliers = new GetAllSupplier(new SupplierRepository());

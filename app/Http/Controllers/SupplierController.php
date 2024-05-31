@@ -17,7 +17,7 @@ class SupplierController extends Controller
         $suppliersService = new SupplierService(new SupplierRepository());
 
         try {
-            $suppliers = $suppliersService->GetAllSupliers();
+            $suppliers = $suppliersService->getAllSupliers();
         } catch (EmptyDataException $e) {
             return $this->success([], $e->getMessage());
         } catch (QueryException $qe) {

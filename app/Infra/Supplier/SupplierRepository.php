@@ -12,4 +12,11 @@ class SupplierRepository implements ISupplierRepository
     {
         return Supplier::select(['id', 'name'])->paginate(5);
     }
+
+    public function getSupplierById(int $supplierId)
+    {
+        return Supplier::select(['id', 'name', 'email', 'phone'])
+            ->where('id', $supplierId)
+            ->first();
+    }
 }

@@ -47,7 +47,7 @@ class SupplierService
                 throw new EmptyDataException();
             }
         } catch (QueryException $qe) {
-            throw new QueryExecutionException('Database query error1: ' . $qe->getMessage());
+            throw new QueryExecutionException('Database query error: ' . $qe->getMessage());
         }
 
         return $supplier;

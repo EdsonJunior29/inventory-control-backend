@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Http\Controllers;
 
+use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Services\SupplierServices\SupplierService;
+use App\Http\Controllers\SupplierController;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
+use PHPUnit\Framework\Attributes\TestWith;
 use Mockery;
 use Tests\TestCase;
 
@@ -18,10 +21,13 @@ class SupplierControllerTest extends TestCase
 {
     use RefreshDatabase;
     
+    protected $supplierRepositoryMock;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->seed('ProfilesAndUsersSeeder');
+        $this->supplierRepositoryMock = $this->createMock(ISupplierRepository::class);
     }
 
     public function authenticateUser()
@@ -36,6 +42,7 @@ class SupplierControllerTest extends TestCase
         return $response->json('data.token');
     }
 
+    # php artisan test --filter=SupplierControllerTest::test_get_all_suppiers_success
     public function test_get_all_suppiers_success(): void
     {
         $token = $this->authenticateUser();
@@ -80,5 +87,70 @@ class SupplierControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK)
         ->assertJson($expectedJson);
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=SupplierControllerTest::test_get_supplier_by_id_success
+    public function test_get_supplier_by_id_success(int $supplierId)
+    {
+        // Criar autenticação do usuário
+        $token = $this->authenticateUser();
+
+        // Cria factory para adiconar no banco de dados(Para testes)
+        $supplier = Supplier::factory()->create([ 
+            'id' => $supplierId,
+            'name' => 'Supplier Test',
+            'email' => 'norval49@example.net',
+            'phone' => '(240) 725-5940'
+        ]);
+
+        // Criar um mock do ISupplierRepository usando Mockery
+        $supplierRepositoryMock = Mockery::mock(ISupplierRepository::class);
+        $supplierRepositoryMock->shouldReceive('getSupplierById')
+            ->with($supplierId)
+            ->andReturn($supplier);
+        
+        // Chamar o método da controller para obter o fornecedor parando parâmetro {id}
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->getJson(route('supplier.getById', ['id' => $supplierId]));
+
+        // Montar o JSON esperado (Retorno da requisição)
+        $expectedJson = [
+            "id" => $supplier['id'],
+            "name" => $supplier['name'],
+            "email" => $supplier['email'],
+            "phone" => $supplier['phone']
+        ];
+
+        // Verificar a resposta da controller
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson($expectedJson);
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=SupplierControllerTest::test_get_supplier_by_id_return_empty
+    public function test_get_supplier_by_id_return_empty(int $supplierId)
+    {
+        // Criar autenticação do usuário
+        $token = $this->authenticateUser();
+
+        // Criar um mock do ISupplierRepository usando Mockery
+        $supplierRepositoryMock = Mockery::mock(ISupplierRepository::class);
+        $supplierRepositoryMock->shouldReceive('getSupplierById')
+            ->with($supplierId)
+            ->andReturn(null);
+        
+        // Chamar o método da controller para obter o fornecedor parando parâmetro {id}
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->getJson(route('supplier.getById', ['id' => $supplierId]));
+
+        // Montar o JSON esperado (Retorno da requisição)
+        $expectedJson = [];
+
+        // Verificar a resposta da controller
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson($expectedJson);
     }
 }

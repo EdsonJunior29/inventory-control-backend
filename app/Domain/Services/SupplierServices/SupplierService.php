@@ -5,8 +5,10 @@ namespace App\Domain\Services\SupplierServices;
 use App\Domain\Exception\EmptyDataException;
 use App\Domain\Exception\QueryExecutionException;
 use App\Domain\IRepository\ISupplierRepository;
+use App\Domain\UseCase\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\UseCase\Supplier\GetSuppliers\GetAllSupplier;
 use App\Infra\Supplier\SupplierRepository;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -33,5 +35,21 @@ class SupplierService
         }
 
         return  $suppliers;
+    }
+
+    public function getSupplierById(int $supplierId)
+    {
+        try {
+            $getSupplierById = new GetSupplierById(new SupplierRepository());
+            $supplier = $getSupplierById->execute($supplierId);
+
+            if( $supplier == null) {
+                throw new EmptyDataException();
+            }
+        } catch (QueryException $qe) {
+            throw new QueryExecutionException('Database query error1: ' . $qe->getMessage());
+        }
+
+        return $supplier;
     }
 }

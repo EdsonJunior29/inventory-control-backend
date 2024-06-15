@@ -8,6 +8,8 @@ use App\Domain\Exception\EmptyDataException;
 use App\Domain\IRepository\ISupplierRepository;
 use App\Domain\Services\SupplierServices\SupplierService;
 use App\Models\Supplier;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -68,7 +70,7 @@ class SupplierServiceTest extends TestCase
             ->willReturn(collect([$supplier]));
 
         $supplierService = new SupplierService($this->supplierRepositoryMock);
-        $suppliers = $supplierService-> getSupplierById($supplierId);
+        $suppliers = $supplierService->getSupplierById($supplierId);
 
         $this->assertEquals($supplier->name, $suppliers->name);
     }
@@ -83,6 +85,48 @@ class SupplierServiceTest extends TestCase
 
         $supplierService = new SupplierService($this->supplierRepositoryMock);
         $supplierService->getSupplierById(999);
+    }
+
+    #[TestWith([5000])]
+    # php artisan test --filter=SupplierServiceTest::test_delete_supplier_with_success
+    public function test_delete_supplier_with_success(int $supplierId)
+    {
+        Supplier::factory()->create(['id' => $supplierId, 'name' => 'Supplier Test']);
+        
+        $this->supplierRepositoryMock
+            ->method('deleteSupplierById')
+            ->willReturn(null);
+
+        $supplierService = new SupplierService($this->supplierRepositoryMock);
+        $supplier = $supplierService->deleteSupplierById($supplierId);
+
+        $this->assertNull( $supplier);
+    }
+
+    #[TestWith([5000])]
+    # php artisan test --filter=SupplierServiceTest::test_delete_supplier_by_id_throws_empty_data_exception
+    public function test_delete_supplier_by_id_throws_empty_data_exception(int $supplierId)
+    {
+        $this->supplierRepositoryMock->method('deleteSupplierById')
+            ->willReturn(null);
+
+        $this->expectException(EmptyDataException::class);
+
+        $supplierService = new SupplierService($this->supplierRepositoryMock);
+        $supplierService->getSupplierById($supplierId);
+    }
+
+    #[TestWith([5000])]
+    # php artisan test --filter=SupplierServiceTest:: test_delete_supplier_by_id_throws_exception
+    public function test_delete_supplier_by_id_throws_exception(int $supplierId)
+    {
+        $this->supplierRepositoryMock->method('deleteSupplierById')
+            ->willReturn(null);
+
+        $this->expectException(Exception::class);
+
+        $supplierService = new SupplierService($this->supplierRepositoryMock);
+        $supplierService->getSupplierById($supplierId);
     }
 
 }

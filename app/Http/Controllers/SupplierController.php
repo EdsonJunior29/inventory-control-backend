@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Exception\EmptyDataException;
+use App\Domain\Exception\QueryExecutionException;
 use App\Domain\Services\SupplierServices\SupplierService;
 use App\Infra\Supplier\SupplierRepository;
 use App\Traits\HttpResponses;
@@ -15,17 +16,17 @@ class SupplierController extends Controller
     use HttpResponses;
 
     protected $supplierRepository;
+    protected $suppliersService;
 
     public function __construct(SupplierRepository $supplierRepository) {
         $this->supplierRepository = $supplierRepository;
+        $this->suppliersService = new SupplierService($this->supplierRepository);
     }
 
     public function getAllSuppliers()
     {
-        $suppliersService = new SupplierService($this->supplierRepository);
-
         try {
-            $suppliers = $suppliersService->getAllSupliers();
+            $suppliers = $this->suppliersService->getAllSupliers();
         } catch (EmptyDataException $e) {
             return $this->success([], $e->getMessage());
         } catch (QueryException $qe) {
@@ -37,10 +38,8 @@ class SupplierController extends Controller
 
     public function getSupplierById($supplierId)
     {
-        $suppliersService = new SupplierService($this->supplierRepository);
-
         try {
-            $supplier = $suppliersService->getSupplierById($supplierId); 
+            $supplier = $this->suppliersService->getSupplierById($supplierId); 
         } catch (EmptyDataException $e) {
             return $this->success([], $e->getMessage());
         } catch (QueryException $qe) {
@@ -51,5 +50,17 @@ class SupplierController extends Controller
 
         return $supplier;
         
+    }
+
+    public function deleteSupplierById($supplierId)
+    {
+        try {
+            $this->suppliersService->deleteSupplierById($supplierId);
+        } catch (QueryExecutionException $queryEx) {
+            return $this->success([], $queryEx->getMessage(), Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return $this->error([], 'An unexpected error occurred: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $this->success([], 'Supplier deleted successfully', Response::HTTP_NO_CONTENT);
     }
 }

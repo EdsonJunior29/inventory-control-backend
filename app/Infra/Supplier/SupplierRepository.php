@@ -19,4 +19,9 @@ class SupplierRepository implements ISupplierRepository
             ->where('id', $supplierId)
             ->first();
     }
+
+    public function deleteSupplierById(int $supplierId)
+    {
+        return Supplier::destroy($supplierId);
+    }
 }

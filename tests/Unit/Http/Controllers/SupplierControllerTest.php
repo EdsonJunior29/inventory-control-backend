@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Http\Controllers;
 
+use App\Domain\Exception\QueryExecutionException;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Services\SupplierServices\SupplierService;
@@ -152,5 +153,62 @@ class SupplierControllerTest extends TestCase
         // Verificar a resposta da controller
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson($expectedJson);
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=SupplierControllerTest::test_delete_supplier_by_id_return_success
+    public function test_delete_supplier_by_id_return_success(int $supplierId)
+    {
+        $token = $this->authenticateUser();
+
+        $supplier = Supplier::factory()->create([ 
+            'id' => $supplierId,
+            'name' => 'Supplier Test',
+            'email' => 'norval49@example.net',
+            'phone' => '(240) 725-5940'
+        ]);
+
+        $supplierRepositoryMock = Mockery::mock(ISupplierRepository::class);
+
+        $supplierRepositoryMock
+            ->shouldReceive('getSupplierById')
+            ->with($supplierId)
+            ->andReturn($supplier);
+
+        $supplierRepositoryMock
+            ->shouldReceive('deleteSupplierById')
+            ->with($supplierId)
+            ->andReturn(true);
+        
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->deleteJson(route('supplier.deleteById', ['id' => $supplierId]));
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT)
+            ->assertNoContent();
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=SupplierControllerTest::test_delete_supplier_by_id_query_execution_exception
+    public function test_delete_supplier_by_id_query_execution_exception(int $supplierId)
+    {
+        $token = $this->authenticateUser();
+        $suppliersServiceMock = Mockery::mock(SupplierService::class);
+        
+        $suppliersServiceMock->shouldReceive('deleteSupplierById')
+            ->with($supplierId)
+            ->andThrow(new QueryExecutionException('supplier not found'));
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->deleteJson(route('supplier.deleteById', ['id' => $supplierId]));
+
+        $expectedJson = [
+            "message" => 'supplier not found',
+            "data" => [],
+        ];
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+        ->assertJson($expectedJson);
     }
 }

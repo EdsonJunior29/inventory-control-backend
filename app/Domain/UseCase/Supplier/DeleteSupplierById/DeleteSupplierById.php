@@ -3,10 +3,7 @@
 namespace App\Domain\UseCase\Supplier\DeleteSupplierById;
 
 use App\Domain\Exception\EmptyDataException;
-use App\Domain\Exception\QueryExecutionException;
 use App\Domain\IRepository\ISupplierRepository;
-use Exception;
-use Illuminate\Http\Response;
 
 class DeleteSupplierById
 {

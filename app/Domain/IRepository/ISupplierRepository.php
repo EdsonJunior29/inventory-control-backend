@@ -9,4 +9,6 @@ interface ISupplierRepository
     public function getAllSupplier() : LengthAwarePaginator;
 
     public function getSupplierById(int $supplierId);
+
+    public function deleteSupplierById(int $supplierId);
 }

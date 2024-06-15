@@ -5,6 +5,7 @@ namespace App\Domain\Services\SupplierServices;
 use App\Domain\Exception\EmptyDataException;
 use App\Domain\Exception\QueryExecutionException;
 use App\Domain\IRepository\ISupplierRepository;
+use App\Domain\UseCase\Supplier\DeleteSupplierById\DeleteSupplierById;
 use App\Domain\UseCase\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\UseCase\Supplier\GetSuppliers\GetAllSupplier;
 use App\Infra\Supplier\SupplierRepository;
@@ -51,5 +52,17 @@ class SupplierService
         }
 
         return $supplier;
+    }
+
+    public function deleteSupplierById(int $supplierId)
+    {
+        try {
+            $deleteSupplierById = new DeleteSupplierById(new SupplierRepository());
+            $deleteSupplierById->execute($supplierId);
+        } catch (EmptyDataException $qe) {
+            throw new QueryExecutionException($qe->getMessage());
+        } catch (\Throwable $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 }

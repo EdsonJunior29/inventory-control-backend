@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Http\Controllers;
+namespace Tests\Feature\Http\Controllers;
 
 use App\Domain\Exception\UnauthorizedUserException;
 use App\Domain\Services\UserServices\LoginUserService;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
-# php artisan test --testsuite=Unit --filter=AuthControllerTest
+# php artisan test --filter=AuthControllerTest
 class AuthControllerTest extends TestCase
 {
     use WithFaker, RefreshDatabase;
@@ -23,7 +23,7 @@ class AuthControllerTest extends TestCase
         $this->seed('ProfilesAndUsersSeeder');
     }
 
-    # php artisan test --testsuite=Unit --filter=AuthControllerTest::test_login_success
+    # php artisan test --filter=AuthControllerTest::test_login_success
     public function test_login_success()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
@@ -54,7 +54,7 @@ class AuthControllerTest extends TestCase
         );
     }
 
-    # php artisan test --testsuite=Unit --filter=AuthControllerTest::test_login_throw_unauthorized_user_exception
+    # php artisan test --filter=AuthControllerTest::test_login_throw_unauthorized_user_exception
     public function test_login_throw_unauthorized_user_exception()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
@@ -82,7 +82,7 @@ class AuthControllerTest extends TestCase
         );
     }
 
-    # php artisan test --testsuite=Unit --filter=AuthControllerTest::test_register_user_with_success
+    # php artisan test --filter=AuthControllerTest::test_register_user_with_success
     public function test_register_user_with_success()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();

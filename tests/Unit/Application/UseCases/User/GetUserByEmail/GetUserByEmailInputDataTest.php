@@ -8,11 +8,11 @@ use App\Application\UseCases\User\GetUserByEmail\GetUserByEmailInputData;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
-# php artisan test --testsuite=Unit --filter=GetUserByEmailInputDataTest
+# php artisan test --filter=GetUserByEmailInputDataTest
 class GetUserByEmailInputDataTest extends TestCase
 {
     
-    # php artisan test --testsuite=Unit --filter=GetUserByEmailInputDataTest::test_constructor
+    # php artisan test --filter=GetUserByEmailInputDataTest::test_constructor
     #[TestWith(['junior@teste.com'])]
     #[TestWith(['joão@teste.com'])]
     public function test_constructor(string $email): void

@@ -14,10 +14,10 @@ use App\Domain\Entities\User as EntitiesUser;
 use App\Exceptions\CreateUserException;
 use Illuminate\Support\Facades\Hash;
 
-# php artisan test --testsuite=Unit --filter=CreateUserTest
+# php artisan test --filter=CreateUserTest
 class CreateUserTest extends TestCase
 {
-    # php artisan test --testsuite=Unit --filter=CreateUserTest::test_execute_save_user_with_default_profile
+    # php artisan test --filter=CreateUserTest::test_execute_save_user_with_default_profile
     public function test_execute_save_user_with_default_profile()
     {
         $createUserInputData = new CreateUserInputData(
@@ -41,7 +41,7 @@ class CreateUserTest extends TestCase
         $createUser->execute($createUserInputData);
     }
 
-    # php artisan test --testsuite=Unit --filter=CreateUserTest::test_execute_save_user_with_default_profile_throws_exception_on_failure
+    # php artisan test --filter=CreateUserTest::test_execute_save_user_with_default_profile_throws_exception_on_failure
     public function test_execute_save_user_with_default_profile_throws_exception_on_failure()
     {
         $createUserInputData = new CreateUserInputData(
@@ -64,7 +64,7 @@ class CreateUserTest extends TestCase
         $createUser->execute($createUserInputData);
     }
 
-    # php artisan test --testsuite=Unit --filter=CreateUserTest::test_generate_password_hash
+    # php artisan test --filter=CreateUserTest::test_generate_password_hash
     public function test_generate_password_hash()
     {
         $reflector = new \ReflectionClass(CreateUser::class);

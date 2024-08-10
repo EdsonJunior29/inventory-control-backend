@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Mockery;
 use Tests\TestCase;
 
-# php artisan test --testsuite=Unit --filter=AuthUserTest
+# php artisan test --filter=AuthUserTest
 class AuthUserTest extends TestCase
 {
     protected $authUser;
@@ -31,7 +31,7 @@ class AuthUserTest extends TestCase
         );
     }
 
-    # php artisan test --testsuite=Unit --filter=AuthUserTest::test_authenticate_user_success
+    # php artisan test --filter=AuthUserTest::test_authenticate_user_success
     public function test_authenticate_user_success()
     {
         $email = 'test@example.com';
@@ -55,7 +55,7 @@ class AuthUserTest extends TestCase
         $this->assertInstanceOf(User::class, $result);
     }
 
-    # php artisan test --testsuite=Unit --filter=AuthUserTest::test_authenticate_user_fails_throw_unauthorized_user_exception
+    # php artisan test --filter=AuthUserTest::test_authenticate_user_fails_throw_unauthorized_user_exception
     public function test_authenticate_user_fails_throw_unauthorized_user_exception()
     {
         $email = 'test@example.com';

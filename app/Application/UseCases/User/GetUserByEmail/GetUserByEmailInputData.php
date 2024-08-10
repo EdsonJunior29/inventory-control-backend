@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\UseCase\User\GetUserByEmail;
+namespace App\Application\UseCases\User\GetUserByEmail;
 
 class GetUserByEmailInputData
 {

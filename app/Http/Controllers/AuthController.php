@@ -2,25 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Application\UseCases\Auth\AuthUser\AuthUser;
+use App\Application\UseCases\Auth\AuthUser\AuthUserInputData;
 use App\Exceptions\UnauthorizedUserException;
-use App\Domain\Services\UserServices\LoginUserService;
 use App\Http\Requests\AuthLoginUserRequest;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Infra\User\UserRepository;
 
 class AuthController extends Controller
 {
     use HttpResponses;
+
+    private $authUserUseCase;
+
+    public function __construct(AuthUser $authUser)
+    {
+        $this->authUserUseCase = $authUser;
+    }
 
     public function login(AuthLoginUserRequest $request)
     {
         $request->validated($request->all());
 
         try {    
-            $userService = new LoginUserService(new UserRepository());
-            $user = $userService->userLogin($request->all());
+            $userInputData = new AuthUserInputData(
+                $request['email'],
+                $request['password']
+            );
+            $user = $this->authUserUseCase->execute($userInputData);
+
+            if(!$user) {
+                return $this->success(
+                    [],
+                    'User Not Found',
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
         } catch (UnauthorizedUserException $ex) {
             return $this->error('', $ex->getMessage(), $ex->getCode());
         }

@@ -8,5 +8,5 @@ use App\Enums\Profiles;
 interface IUserRepository
 {
     public function createUser(User $user, Profiles $profileType) : void;
-    //public function getUserByEmail(string $userEmail) : ?User;
+    public function getUserByEmail(string $userEmail);
 }

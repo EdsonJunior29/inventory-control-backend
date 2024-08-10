@@ -2,7 +2,6 @@
 
 namespace App\Domain\UseCase\Supplier\DeleteSupplierById;
 
-use App\Domain\Exception\EmptyDataException;
 use App\Domain\IRepository\ISupplierRepository;
 
 class DeleteSupplierById
@@ -18,7 +17,7 @@ class DeleteSupplierById
     {
         $supplierDatabase = $this->querySupplierData($supplierId);
         if($supplierDatabase === null) {
-            throw new EmptyDataException('supplier not found');
+            return $supplierDatabase;
         }
 
         $this->repo->deleteSupplierById($supplierDatabase->id);

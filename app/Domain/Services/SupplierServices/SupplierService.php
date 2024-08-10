@@ -2,16 +2,16 @@
 
 namespace App\Domain\Services\SupplierServices;
 
-use App\Domain\Exception\EmptyDataException;
+use App\Domain\Exception\InternalServerErrorException;
 use App\Domain\Exception\QueryExecutionException;
 use App\Domain\IRepository\ISupplierRepository;
 use App\Domain\UseCase\Supplier\DeleteSupplierById\DeleteSupplierById;
 use App\Domain\UseCase\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\UseCase\Supplier\GetSuppliers\GetAllSupplier;
 use App\Infra\Supplier\SupplierRepository;
-use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Throwable;
 
 class SupplierService
 {
@@ -27,11 +27,8 @@ class SupplierService
         try {
             $getAllSuppliers = new GetAllSupplier(new SupplierRepository());
             $suppliers = $getAllSuppliers->execute();
-
-            if($suppliers->isEmpty()) {
-                throw new EmptyDataException();
-            }
-        } catch (QueryException $e) {
+            
+        } catch (Throwable $e) {
             throw new QueryExecutionException($e->getMessage(), $e->getCode());
         }
 
@@ -44,9 +41,6 @@ class SupplierService
             $getSupplierById = new GetSupplierById(new SupplierRepository());
             $supplier = $getSupplierById->execute($supplierId);
 
-            if( $supplier == null) {
-                throw new EmptyDataException();
-            }
         } catch (QueryException $qe) {
             throw new QueryExecutionException('Database query error: ' . $qe->getMessage());
         }
@@ -58,11 +52,11 @@ class SupplierService
     {
         try {
             $deleteSupplierById = new DeleteSupplierById(new SupplierRepository());
-            $deleteSupplierById->execute($supplierId);
-        } catch (EmptyDataException $qe) {
-            throw new QueryExecutionException($qe->getMessage());
-        } catch (\Throwable $e) {
-            throw new Exception($e->getMessage(), $e->getCode());
+            $supplier = $deleteSupplierById->execute($supplierId);
+        } catch (QueryException $th) {
+            throw new InternalServerErrorException($th->getMessage(), $th->getCode());
         }
+       
+        return $supplier;
     }
 }

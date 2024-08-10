@@ -21,10 +21,10 @@ class UserRepository implements IUserRepository
         $user->profiles()->attach($profileType->value);
     }
 
-    //public function getUserByEmail(string $userEmail) : ?User
-    //{
-    //    return User::where('email', $userEmail)
-    //        ->with('profiles')
-    //        ->first();
-    //}
+    public function getUserByEmail(string $userEmail)
+    {
+        return User::where('email', $userEmail)
+            ->with('profiles')
+            ->first();
+    }
 }

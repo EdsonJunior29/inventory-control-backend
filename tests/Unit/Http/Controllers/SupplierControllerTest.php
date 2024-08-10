@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\TestWith;
 use Mockery;
 use Tests\TestCase;
 
-# php artisan test --filter=SupplierControllerTest
+# php artisan test --testsuite=Unit --filter=SupplierControllerTest
 class SupplierControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -42,7 +42,7 @@ class SupplierControllerTest extends TestCase
         return $response->json('data.token');
     }
 
-    # php artisan test --filter=SupplierControllerTest::test_get_all_suppiers_success
+    # php artisan test --testsuite=Unit --filter=SupplierControllerTest::test_get_all_suppiers_success
     public function test_get_all_suppiers_success(): void
     {
         $token = $this->authenticateUser();
@@ -90,7 +90,7 @@ class SupplierControllerTest extends TestCase
     }
 
     #[TestWith([1])]
-    # php artisan test --filter=SupplierControllerTest::test_get_supplier_by_id_success
+    # php artisan test --testsuite=Unit --filter=SupplierControllerTest::test_get_supplier_by_id_success
     public function test_get_supplier_by_id_success(int $supplierId)
     {
         // Criar autenticação do usuário
@@ -129,7 +129,7 @@ class SupplierControllerTest extends TestCase
     }
 
     #[TestWith([1])]
-    # php artisan test --filter=SupplierControllerTest::test_get_supplier_by_id_return_empty
+    # php artisan test --testsuite=Unit --filter=SupplierControllerTest::test_get_supplier_by_id_return_empty
     public function test_get_supplier_by_id_return_empty(int $supplierId)
     {
         // Criar autenticação do usuário
@@ -155,7 +155,7 @@ class SupplierControllerTest extends TestCase
     }
 
     #[TestWith([1])]
-    # php artisan test --filter=SupplierControllerTest::test_delete_supplier_by_id_return_success
+    # php artisan test --testsuite=Unit --filter=SupplierControllerTest::test_delete_supplier_by_id_return_success
     public function test_delete_supplier_by_id_return_success(int $supplierId)
     {
         $token = $this->authenticateUser();

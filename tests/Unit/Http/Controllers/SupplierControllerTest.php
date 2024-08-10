@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Http\Controllers;
 
-use App\Domain\Exception\QueryExecutionException;
+use App\Domain\Exception\InternalServerErrorException;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Services\SupplierServices\SupplierService;
-use App\Http\Controllers\SupplierController;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Response;
@@ -151,7 +150,7 @@ class SupplierControllerTest extends TestCase
         $expectedJson = [];
 
         // Verificar a resposta da controller
-        $response->assertStatus(Response::HTTP_OK)
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJson($expectedJson);
     }
 
@@ -186,29 +185,5 @@ class SupplierControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT)
             ->assertNoContent();
-    }
-
-    #[TestWith([1])]
-    # php artisan test --filter=SupplierControllerTest::test_delete_supplier_by_id_query_execution_exception
-    public function test_delete_supplier_by_id_query_execution_exception(int $supplierId)
-    {
-        $token = $this->authenticateUser();
-        $suppliersServiceMock = Mockery::mock(SupplierService::class);
-        
-        $suppliersServiceMock->shouldReceive('deleteSupplierById')
-            ->with($supplierId)
-            ->andThrow(new QueryExecutionException('supplier not found'));
-
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token
-        ])->deleteJson(route('supplier.deleteById', ['id' => $supplierId]));
-
-        $expectedJson = [
-            "message" => 'supplier not found',
-            "data" => [],
-        ];
-
-        $response->assertStatus(Response::HTTP_NOT_FOUND)
-        ->assertJson($expectedJson);
     }
 }

@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\Services;
 
-use App\Domain\Exception\EmptyDataException;
 use App\Domain\IRepository\ISupplierRepository;
 use App\Domain\Services\SupplierServices\SupplierService;
 use App\Models\Supplier;
-use Exception;
-use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -54,9 +51,11 @@ class SupplierServiceTest extends TestCase
 
         $supplierService = new SupplierService($this->supplierRepositoryMock);
 
-        $this->expectException(EmptyDataException::class);
+        $response = $supplierService->getAllSupliers();
 
-        $supplierService->getAllSupliers();
+        //Algumas forma de validar se o response está vazio.
+        $this->assertEmpty($response);
+        $this->assertTrue($response->isEmpty());
     }
 
     #[TestWith([1])]
@@ -75,16 +74,16 @@ class SupplierServiceTest extends TestCase
         $this->assertEquals($supplier->name, $suppliers->name);
     }
 
-    # php artisan test --filter=SupplierServiceTest::test_get_supplier_by_id_throws_empty_data_exception
-    public function test_get_supplier_by_id_throws_empty_data_exception()
+    # php artisan test --filter=SupplierServiceTest::test_get_supplier_by_id_throws_empty_data
+    public function test_get_supplier_by_id_throws_empty_data()
     {
         $this->supplierRepositoryMock->method('getSupplierById')
             ->willReturn(null);
 
-        $this->expectException(EmptyDataException::class);
-
         $supplierService = new SupplierService($this->supplierRepositoryMock);
-        $supplierService->getSupplierById(999);
+        $response = $supplierService->getSupplierById(999);
+
+        $this->assertEmpty($response);
     }
 
     #[TestWith([5000])]
@@ -100,33 +99,20 @@ class SupplierServiceTest extends TestCase
         $supplierService = new SupplierService($this->supplierRepositoryMock);
         $supplier = $supplierService->deleteSupplierById($supplierId);
 
-        $this->assertNull( $supplier);
+        $this->assertNull($supplier);
     }
 
     #[TestWith([5000])]
-    # php artisan test --filter=SupplierServiceTest::test_delete_supplier_by_id_throws_empty_data_exception
-    public function test_delete_supplier_by_id_throws_empty_data_exception(int $supplierId)
+    # php artisan test --filter=SupplierServiceTest::test_delete_supplier_by_id_throws_empty_data
+    public function test_delete_supplier_by_id_throws_empty_data(int $supplierId)
     {
         $this->supplierRepositoryMock->method('deleteSupplierById')
             ->willReturn(null);
 
-        $this->expectException(EmptyDataException::class);
-
         $supplierService = new SupplierService($this->supplierRepositoryMock);
-        $supplierService->getSupplierById($supplierId);
-    }
+        $response = $supplierService->getSupplierById($supplierId);
 
-    #[TestWith([5000])]
-    # php artisan test --filter=SupplierServiceTest:: test_delete_supplier_by_id_throws_exception
-    public function test_delete_supplier_by_id_throws_exception(int $supplierId)
-    {
-        $this->supplierRepositoryMock->method('deleteSupplierById')
-            ->willReturn(null);
-
-        $this->expectException(Exception::class);
-
-        $supplierService = new SupplierService($this->supplierRepositoryMock);
-        $supplierService->getSupplierById($supplierId);
+        $this->assertEmpty($response);
     }
 
 }

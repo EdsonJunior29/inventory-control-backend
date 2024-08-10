@@ -2,6 +2,7 @@
 
 namespace App\Infra\User;
 
+use App\Domain\Entities\User as EntitiesUser;
 use App\Domain\IRepository\IUserRepository;
 use App\Enums\Profiles;
 use App\Models\User;
@@ -9,23 +10,21 @@ use App\Models\User;
 
 class UserRepository implements IUserRepository
 {
-    public function createUser(string $name, string $email, string $password, Profiles $profileType) : User 
+    public function createUser(EntitiesUser $entitieUser, Profiles $profileType) : void
     {
         $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => $password
+            'name' => $entitieUser->getName(),
+            'email' => $entitieUser->getEmail(),
+            'password' => $entitieUser->getPassword()
         ]);
 
         $user->profiles()->attach($profileType->value);
-
-        return $user;
     }
 
-    public function getUserByEmail(string $userEmail) : ?User
-    {
-        return User::where('email', $userEmail)
-            ->with('profiles')
-            ->first();
-    }
+    //public function getUserByEmail(string $userEmail) : ?User
+    //{
+    //    return User::where('email', $userEmail)
+    //        ->with('profiles')
+    //        ->first();
+    //}
 }

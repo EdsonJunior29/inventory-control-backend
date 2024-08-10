@@ -2,11 +2,11 @@
 
 namespace App\Domain\IRepository;
 
+use App\Domain\Entities\User;
 use App\Enums\Profiles;
-use App\Models\User;
 
 interface IUserRepository
 {
-    public function createUser(string $name, string $email, string $password, Profiles $profileType) : User;
-    public function getUserByEmail(string $userEmail) : ?User;
+    public function createUser(User $user, Profiles $profileType) : void;
+    //public function getUserByEmail(string $userEmail) : ?User;
 }

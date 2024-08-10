@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Domain\Exception\CreateUserException;
-use App\Domain\Exception\UnauthorizedUserException;
-use App\Domain\Services\UserServices\CreateUserService;
+use App\Exceptions\UnauthorizedUserException;
 use App\Domain\Services\UserServices\LoginUserService;
 use App\Http\Requests\AuthLoginUserRequest;
-use App\Http\Requests\AuthStoreUserRequest;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -32,20 +29,6 @@ class AuthController extends Controller
             'User' => $user,
             'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
         ]);
-    }
-
-    public function store (AuthStoreUserRequest $request)
-    {
-        $request->validated($request->all());
-
-        try {
-            $userService = new CreateUserService(new UserRepository());
-            $user = $userService->createUser($request->all());
-        } catch (CreateUserException $ex) {
-            return $this->error('', $ex->getMessage(), $ex->getCode());
-        }
-     
-        return $this->success(['User' => $user], 'User created successfully',  Response::HTTP_CREATED);
     }
 
     public function logout()

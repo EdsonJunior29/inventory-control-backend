@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Domain\Services\SupplierServices\SupplierService;
@@ -33,7 +34,7 @@ class SupplierControllerTest extends TestCase
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
 
-        $response = $this->postJson(route('auth.login'), [
+        $response = $this->postJson(env('APP_URL').'/api/login', [
             'email' => $adminUser->email,
             'password' => 'Teste2@145',
         ]);
@@ -46,15 +47,21 @@ class SupplierControllerTest extends TestCase
     {
         $token = $this->authenticateUser();
 
-        $suppliersData = Supplier::factory()->count(2)->create();
+        $suppliersData = Supplier::factory()->count(7)->create();
 
-        $suppliersMock = new LengthAwarePaginator(collect($suppliersData), count($suppliersData), 15, 1);
+        $suppliersMock = new LengthAwarePaginator(
+            collect($suppliersData->take(5)), // Dados da página atual
+            $suppliersData->count(),   // Total de itens
+            5,                      // Itens por página
+            1,                       // Página atual
+            ['path' => url('/api/supplier/all-suppliers')]
+        );
 
-        $supplierServiceMock = Mockery::mock(SupplierService::class);
-        $supplierServiceMock->shouldReceive('getAllSupliers')
+        $getAllSuppliersUseCases = Mockery::mock(GetAllSupplier::class);
+        $getAllSuppliersUseCases->shouldReceive('execute')
             ->andReturn($suppliersMock);
 
-        $this->app->instance(SupplierService::class, $supplierServiceMock);
+        $this->app->instance(GetAllSupplier::class, $getAllSuppliersUseCases);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
@@ -62,7 +69,7 @@ class SupplierControllerTest extends TestCase
 
         $expectedJson = [
             "current_page" => 1,
-            'data' => [
+            "data" => [
                 [
                     "id" => $suppliersData[0]->id,
                     "name" => $suppliersData[0]->name
@@ -71,21 +78,55 @@ class SupplierControllerTest extends TestCase
                     "id" => $suppliersData[1]->id,
                     "name" => $suppliersData[1]->name
                 ],
+                [
+                    "id" => $suppliersData[2]->id,
+                    "name" => $suppliersData[2]->name
+                ],
+                [
+                    "id" => $suppliersData[3]->id,
+                    "name" => $suppliersData[3]->name
+                ],
+                [
+                    "id" => $suppliersData[4]->id,
+                    "name" => $suppliersData[4]->name
+                ],
             ],
-            "first_page_url" => "http://localhost/api/supplier/all-suplliers?page=1",
+            "first_page_url" => "http://localhost/api/supplier/all-suppliers?page=1",
             "from" => 1,
-            "last_page" => 1,
-            "last_page_url" => "http://localhost/api/supplier/all-suplliers?page=1",
-            "next_page_url" => null, 
-            "path" => "http://localhost/api/supplier/all-suplliers",
+            "last_page" => 2,
+            "last_page_url" => "http://localhost/api/supplier/all-suppliers?page=2",
+            "links" => [
+                [
+                    "url" => null,
+                    "label" => "&laquo; Previous",
+                    "active" => false
+                ],
+                [
+                    "url" => "http://localhost/api/supplier/all-suppliers?page=1",
+                    "label" => "1",
+                    "active" => true
+                ],
+                [
+                    "url" => "http://localhost/api/supplier/all-suppliers?page=2",
+                    "label" => "2",
+                    "active" => false
+                ],
+                [
+                    "url" => "http://localhost/api/supplier/all-suppliers?page=2",
+                    "label" => "Next &raquo;",
+                    "active" => false
+                ]
+            ],
+            "next_page_url" => "http://localhost/api/supplier/all-suppliers?page=2",
+            "path" => "http://localhost/api/supplier/all-suppliers",
             "per_page" => 5,
             "prev_page_url" => null,
-            "to" => 2,
-            "total" => 2,
+            "to" => 5,
+            "total" => 7
         ];
 
         $response->assertStatus(Response::HTTP_OK)
-        ->assertJson($expectedJson);
+            ->assertJson($expectedJson);
     }
 
     #[TestWith([1])]

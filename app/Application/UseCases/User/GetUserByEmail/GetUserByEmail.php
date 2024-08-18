@@ -4,6 +4,7 @@ namespace App\Application\UseCases\User\GetUserByEmail;
 
 use App\Domain\IRepository\IUserRepository;
 use App\Models\User as ModelsUser;
+use App\Domain\Entities\User as EntitiesUser;
 
 class GetUserByEmail
 {
@@ -17,6 +18,12 @@ class GetUserByEmail
 
     public function execute(GetUserByEmailInputData $inputData) : ?ModelsUser
     {   
-        return $this->repo->getUserByEmail($inputData->email);
+        $userEntity = new EntitiesUser(
+            name: '',
+            email: $inputData->email,
+            password: ''
+        );
+        
+        return $this->repo->getUserByEmail($userEntity);
     }
 }

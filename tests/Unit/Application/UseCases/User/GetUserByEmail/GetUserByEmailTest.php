@@ -10,6 +10,7 @@ use App\Domain\IRepository\IUserRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Application\UseCases\User\GetUserByEmail\GetUserByEmail;
 use App\Application\UseCases\User\GetUserByEmail\GetUserByEmailInputData;
+use App\Domain\Entities\User as EntitiesUser;
 
 # php artisan test --filter=GetUserByEmailTest
 class GetUserByEmailTest extends TestCase
@@ -29,9 +30,16 @@ class GetUserByEmailTest extends TestCase
             "created_at" => "2024-05-19T00:02:05.000000Z",
             "id" => 1,
         ]);
+
+        $userEntity = new EntitiesUser(
+            name: '',
+            email:  $email,
+            password: ''
+        );
+
         $userRepositoryMock->expects($this->once())
             ->method("getUserByEmail")
-            ->with($email)
+            ->with($userEntity)
             ->willReturn($user);
 
         $getUserByEmail = new GetUserByEmail($userRepositoryMock);

@@ -21,9 +21,9 @@ class UserRepository implements IUserRepository
         $user->profiles()->attach($profileType->value);
     }
 
-    public function getUserByEmail(string $userEmail)
+    public function getUserByEmail(EntitiesUser $entitieUser): User
     {
-        return User::where('email', $userEmail)
+        return User::where('email', $entitieUser->getEmail())
             ->with('profiles')
             ->first();
     }

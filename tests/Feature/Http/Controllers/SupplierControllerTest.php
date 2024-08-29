@@ -7,7 +7,6 @@ namespace Tests\Feature\Http\Controllers;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Domain\Services\SupplierServices\SupplierService;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\Response;

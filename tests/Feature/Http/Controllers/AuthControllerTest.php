@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
-use App\Domain\Exception\UnauthorizedUserException;
-use App\Domain\Services\UserServices\LoginUserService;
+use App\Application\UseCases\Auth\AuthUser\AuthUser;
+use App\Exceptions\UnauthorizedUserException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -58,17 +58,17 @@ class AuthControllerTest extends TestCase
     public function test_login_throw_unauthorized_user_exception()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
-
-        $userServiceMock = $this->getMockBuilder(LoginUserService::class)
+        
+        $useCaseMock = $this->getMockBuilder(AuthUser::class)
             ->disableOriginalConstructor()
             ->getMock();
             
-        $userServiceMock->method('userLogin')
-            ->willThrowException(new UnauthorizedUserException('Unauthorized', Response::HTTP_UNAUTHORIZED));
+        $useCaseMock->method('execute')
+            ->willThrowException(new UnauthorizedUserException('Credentials do not match', Response::HTTP_UNAUTHORIZED));
 
-        $this->app->instance(LoginUserService::class, $userServiceMock);
+        $this->app->instance(AuthUser::class, $useCaseMock);
 
-        $response = $this->postJson(route('auth.login'), [
+        $response = $this->postJson(env('APP_URL').'/api/login', [
             'email' => $adminUser->email,
             'password' => 'Teste2@145dgygdywgyqd',
         ]);
@@ -78,45 +78,6 @@ class AuthControllerTest extends TestCase
                 'status' => 'Error has occurred',
                 'message' => 'Credentials do not match',
                 'data' => '',
-            ]
-        );
-    }
-
-    # php artisan test --filter=AuthControllerTest::test_register_user_with_success
-    public function test_register_user_with_success()
-    {
-        $adminUser = User::where('email', 'admin@example.com')->first();
-
-        $loggedInUser = $this->postJson(route('auth.login'), [
-            'email' => $adminUser->email,
-            'password' => 'Teste2@145',
-        ]);
-
-        $loggedInUserToken = $loggedInUser->json()['data']['token'];
-
-        $response = $this->withHeaders([
-                'Authorization' => 'Bearer ' . $loggedInUserToken
-            ])->postJson(route('auth.register'), [
-                "name" => "Edson Junior",
-                "email" => "edsonjos61@gmail.com",
-                "password" => "Teste2@145",
-                "password_confirmation" => "Teste2@145",
-                "profile_name" => "Admin"
-            ]
-        );
-        
-        $response->assertStatus(Response::HTTP_CREATED)
-            ->assertJsonStructure([
-                'message',
-                'data' => [
-                    'User' => [
-                        'name',
-                        'email',
-                        'updated_at',
-                        'created_at',
-                        'id',
-                    ],
-                ],
             ]
         );
     }

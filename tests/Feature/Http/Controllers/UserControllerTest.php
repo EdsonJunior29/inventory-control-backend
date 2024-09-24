@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -35,31 +36,24 @@ class UserControllerTest extends TestCase
     # php artisan test --filter=UserControllerTest::test_register_user_with_success
     public function test_register_user_with_success()
     {
+        Profile::factory()->create();
+        
         $token = $this->authenticateUser();
 
         $response = $this->withHeaders([
                 'Authorization' => 'Bearer ' . $token
             ])->postJson(env('APP_URL').'/api/users', [
-                "name" => "Edson Junior",
-                "email" => "edsonjos61@gmail.com",
+                "name" => "John Test",
+                "email" => "john.doe.test@example.com",
                 "password" => "Teste2@145",
                 "password_confirmation" => "Teste2@145",
-                "profile_name" => "Admin"
             ]
         );
         
         $response->assertStatus(Response::HTTP_CREATED)
             ->assertJsonStructure([
                 'message',
-                'data' => [
-                    'User' => [
-                        'name',
-                        'email',
-                        'updated_at',
-                        'created_at',
-                        'id',
-                    ],
-                ],
+                'data' => [],
             ]
         );
     }

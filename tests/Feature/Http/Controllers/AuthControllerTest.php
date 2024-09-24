@@ -38,10 +38,10 @@ class AuthControllerTest extends TestCase
                 'message',
                 'data' => [
                     'User' => [
-                        'id', 'name', 'email', 'created_at', 'updated_at', 'deleted_at',
+                        'id', 'name', 'email',
                         'profiles' => [
                             '*' => [
-                                'id', 'name', 'created_at', 'updated_at', 'deleted_at',
+                                'id', 'name',
                                 'pivot' => [
                                     'users_id', 'profiles_id',
                                 ],

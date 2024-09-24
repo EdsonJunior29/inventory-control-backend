@@ -33,6 +33,7 @@ class UserController extends Controller
             
             $this->createUserUseCase->execute($createUserInputData);
         } catch (CreateUserException $e) {
+            dd($e->getMessage());
             return $this->error(
                 [],
                 $e->getMessage(),

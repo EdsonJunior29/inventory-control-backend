@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\UseCase\Supplier\DeleteSupplierById;
+namespace App\Application\UseCases\Supplier\DeleteSupplierById;
 
 use App\Domain\IRepository\ISupplierRepository;
 

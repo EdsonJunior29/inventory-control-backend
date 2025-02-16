@@ -8,9 +8,10 @@ use App\Application\UseCases\User\UpdateUser\UpdateUserInputData;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\TestWith;
 
+# php artisan test --filter=UpdateUserInputDataTest
 class UpdateUserInputDataTest extends TestCase
 {
-    # php artisan test --filter=UpdateUserInputDataTest
+    # php artisan test --filter=UpdateUserInputDataTest::test_constructor
     #[TestWith([1, 'Junior', 'juniorteste@teste,com'])]
     public function test_constructor(int $id, string $name, string $email): void
     {

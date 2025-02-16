@@ -31,11 +31,8 @@ class GetUserByEmailTest extends TestCase
             "id" => 1,
         ]);
 
-        $userEntity = new EntitiesUser(
-            name: '',
-            email:  $email,
-            password: ''
-        );
+        $userEntity = new EntitiesUser();
+        $userEntity->setEmail($email);
 
         $userRepositoryMock->expects($this->once())
             ->method("getUserByEmail")

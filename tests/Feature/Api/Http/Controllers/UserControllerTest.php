@@ -74,4 +74,28 @@ class UserControllerTest extends TestCase
             ]
         );
     }
+
+    # php artisan test --filter=UserControllerTest::test_update_user_with_success
+    public function test_update_user_with_success()
+    {
+        Profile::factory()->create();
+        
+        $token = $this->authenticateUser();
+
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
+
+        $response = $this->withHeaders([
+                'Authorization' => 'Bearer ' . $token
+            ])->putJson(env('APP_URL').'/api/users/1', [
+                "name" => "John Test",
+                "email" => "john.doe.test@example.com",
+            ]);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
 }

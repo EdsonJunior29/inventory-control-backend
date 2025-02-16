@@ -17,11 +17,9 @@ class GetUserByEmail
 
     public function execute(GetUserByEmailInputData $inputData) : ?ModelsUser
     {   
-        $userEntity = new EntitiesUser(
-            name: '',
-            email: $inputData->email,
-            password: ''
-        );
+        $userEntity = new EntitiesUser();
+
+        $userEntity->setEmail($inputData->email);
 
         return $this->repo->getUserByEmail($userEntity);
     }

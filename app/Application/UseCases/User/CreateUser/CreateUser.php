@@ -19,11 +19,11 @@ class CreateUser
 
     public function execute(CreateUserInputData $inputData): void
     {
-        $user = new EntitiesUser(
-            $inputData->name,
-            $inputData->email,
-            $this->generatePasswordHash($inputData->password)
-        );
+        $user = new EntitiesUser();
+
+        $user->setName($inputData->name);
+        $user->setEmail($inputData->email);
+        $user->setPassword($this->generatePasswordHash($inputData->password));
 
         try {
             $this->repo->createUser($user, Profiles::CLIENT);

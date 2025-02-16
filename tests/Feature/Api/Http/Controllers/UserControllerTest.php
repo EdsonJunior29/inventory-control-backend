@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Api\Http\Middleware\UserAccessValid;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Mockery;
 use Tests\TestCase;
 
 # php artisan test --filter=UserControllerTest
@@ -25,6 +28,13 @@ class UserControllerTest extends TestCase
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
 
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
+
         $response = $this->postJson(env('APP_URL').'/api/login', [
             'email' => $adminUser->email,
             'password' => 'Teste2@145',
@@ -39,6 +49,13 @@ class UserControllerTest extends TestCase
         Profile::factory()->create();
         
         $token = $this->authenticateUser();
+
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
 
         $response = $this->withHeaders([
                 'Authorization' => 'Bearer ' . $token

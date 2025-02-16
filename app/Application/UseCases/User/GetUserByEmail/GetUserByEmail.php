@@ -8,7 +8,6 @@ use App\Domain\Entities\User as EntitiesUser;
 
 class GetUserByEmail
 {
-
     protected $repo;
 
     public function __construct(IUserRepository $userRepository)
@@ -23,7 +22,7 @@ class GetUserByEmail
             email: $inputData->email,
             password: ''
         );
-        
+
         return $this->repo->getUserByEmail($userEntity);
     }
 }

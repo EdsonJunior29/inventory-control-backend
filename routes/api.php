@@ -3,9 +3,10 @@
 use App\Api\Http\Controllers\AuthController;
 use App\Api\Http\Controllers\SupplierController;
 use App\Api\Http\Controllers\UserController;
+use App\Api\Http\Middleware\UserAccessValid;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware(UserAccessValid::class);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -18,6 +19,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::group(['prefix' => 'users'] , function () {
-        Route::post('', [UserController::class, 'store']);
+        Route::post('', [UserController::class, 'store'])->middleware(UserAccessValid::class);
     });
 });

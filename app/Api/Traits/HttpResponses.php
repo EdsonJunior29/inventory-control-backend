@@ -22,4 +22,27 @@ trait HttpResponses
             'data' => $data
         ], $code);
     }
+
+    protected function notFound($message = 'Resource not found.', $code = Response::HTTP_NOT_FOUND)
+    {
+        return response()->json([
+            'message' => $message,
+        ], $code);
+    }
+
+    protected function unauthorized($data, $message = 'Unauthorized.', $code = Response::HTTP_UNAUTHORIZED)
+    {
+        return response()->json([
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
+
+    protected function badRequest($message = 'Bad Request', $code = Response::HTTP_BAD_REQUEST)
+    {
+        return response()->json([
+            'message' => $message,
+        ], $code);
+    }
 }

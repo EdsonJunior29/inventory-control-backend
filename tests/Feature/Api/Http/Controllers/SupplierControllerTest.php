@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Api\Http\Middleware\UserAccessValid;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Supplier;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -32,6 +34,13 @@ class SupplierControllerTest extends TestCase
     public function authenticateUser()
     {
         $adminUser = User::where('email', 'admin@example.com')->first();
+
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
 
         $response = $this->postJson(env('APP_URL').'/api/login', [
             'email' => $adminUser->email,
@@ -59,6 +68,13 @@ class SupplierControllerTest extends TestCase
         $getAllSuppliersUseCases = Mockery::mock(GetAllSupplier::class);
         $getAllSuppliersUseCases->shouldReceive('execute')
             ->andReturn($suppliersMock);
+
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
 
         $this->app->instance(GetAllSupplier::class, $getAllSuppliersUseCases);
 
@@ -149,6 +165,14 @@ class SupplierControllerTest extends TestCase
             ->with($supplierId)
             ->andReturn($supplier);
         
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
+
+
         // Chamar o método da controller para obter o fornecedor parando parâmetro {id}
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
@@ -180,6 +204,14 @@ class SupplierControllerTest extends TestCase
             ->with($supplierId)
             ->andReturn(null);
         
+
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
+
         // Chamar o método da controller para obter o fornecedor parando parâmetro {id}
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
@@ -218,6 +250,13 @@ class SupplierControllerTest extends TestCase
             ->with($supplierId)
             ->andReturn(true);
         
+        $userAccessValidMock = Mockery::mock(UserAccessValid::class);
+        $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
+            return $next($request);
+        });
+    
+        $this->app->instance(UserAccessValid::class, $userAccessValidMock);
+
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
         ])->deleteJson(route('supplier.deleteById', ['id' => $supplierId]));

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infra\Supplier;
+namespace App\Infra\Repositories\Supplier;
 
 use App\Domain\IRepository\ISupplierRepository;
 use App\Models\Supplier;

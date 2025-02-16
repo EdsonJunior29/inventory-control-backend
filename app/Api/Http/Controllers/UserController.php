@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Api\Http\Controllers;
 
 use App\Application\UseCases\User\CreateUser\CreateUser;
 use App\Application\UseCases\User\CreateUser\CreateUserInputData;
-use App\Exceptions\CreateUserException;
-use App\Http\Requests\AuthStoreUserRequest;
-use App\Traits\HttpResponses;
+use App\Domain\Exceptions\CreateUserException;
+use App\Api\Http\Requests\AuthStoreUserRequest;
+use App\Api\Traits\HttpResponses;
 use Illuminate\Http\Response;
 
 class UserController extends Controller
@@ -33,7 +33,6 @@ class UserController extends Controller
             
             $this->createUserUseCase->execute($createUserInputData);
         } catch (CreateUserException $e) {
-            dd($e->getMessage());
             return $this->error(
                 [],
                 $e->getMessage(),

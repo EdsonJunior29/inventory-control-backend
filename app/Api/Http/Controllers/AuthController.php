@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Api\Http\Controllers;
 
 use App\Application\UseCases\Auth\AuthUser\AuthUser;
 use App\Application\UseCases\Auth\AuthUser\AuthUserInputData;
-use App\Exceptions\UnauthorizedUserException;
-use App\Http\Requests\AuthLoginUserRequest;
-use App\Traits\HttpResponses;
+use App\Domain\Exceptions\UnauthorizedUserException;
+use App\API\Http\Requests\AuthLoginUserRequest;
+use App\Api\Traits\HttpResponses;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 

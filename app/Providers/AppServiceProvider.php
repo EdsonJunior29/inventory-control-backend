@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Domain\IRepository\ISupplierRepository;
 use App\Domain\IRepository\IUserRepository;
-use App\Infra\Supplier\SupplierRepository;
-use App\Infra\User\UserRepository;
+use App\Infra\Repositories\Supplier\SupplierRepository;
+use App\Infra\Repositories\User\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

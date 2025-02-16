@@ -5,7 +5,7 @@ namespace App\Application\UseCases\Auth\AuthUser;
 use App\Domain\IRepository\IUserRepository;
 use App\Application\UseCases\User\GetUserByEmail\GetUserByEmail;
 use App\Application\UseCases\User\GetUserByEmail\GetUserByEmailInputData;
-use App\Exceptions\UnauthorizedUserException;
+use App\Domain\Exceptions\UnauthorizedUserException;
 use Illuminate\Support\Facades\Hash;
 
 class AuthUser

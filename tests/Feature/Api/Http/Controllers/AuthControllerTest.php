@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers;
 
 use App\Application\UseCases\Auth\AuthUser\AuthUser;
-use App\Exceptions\UnauthorizedUserException;
+use App\Domain\Exceptions\UnauthorizedUserException;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -53,6 +53,31 @@ class AuthControllerTest extends TestCase
             ]
         );
     }
+
+      # php artisan test --filter=AuthControllerTest::test_login_return_user_not_found
+      public function test_login_return_user_not_found()
+      {        
+          $useCaseMock = $this->getMockBuilder(AuthUser::class)
+              ->disableOriginalConstructor()
+              ->getMock();
+          
+          $useCaseMock->method('execute')
+              ->willReturn([]);
+          
+          $this->app->instance(AuthUser::class, $useCaseMock);
+  
+          $response = $this->postJson(env('APP_URL').'/api/login', [
+              'email' => 'admin@example2.com',
+              'password' => 'Teste2@145dgygdywgyqd',
+          ]);
+  
+          $response->assertStatus(Response::HTTP_NOT_FOUND)
+              ->assertJson([
+                  'message' => 'User Not Found',
+                  'data' => [],
+              ]
+          );
+      }
 
     # php artisan test --filter=AuthControllerTest::test_login_throw_unauthorized_user_exception
     public function test_login_throw_unauthorized_user_exception()

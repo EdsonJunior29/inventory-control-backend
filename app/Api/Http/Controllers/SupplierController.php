@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Api\Http\Controllers;
 
 use App\Application\UseCases\Supplier\DeleteSupplierById\DeleteSupplierById;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
-use App\Exceptions\InternalServerErrorException;
-use App\Traits\HttpResponses;
+use App\Domain\Exceptions\InternalServerErrorException;
+use App\Api\Traits\HttpResponses;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;

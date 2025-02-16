@@ -2,10 +2,10 @@
 
 namespace App\Application\UseCases\User\CreateUser;
 
-use App\Enums\Profiles;
+use App\Domain\Enums\Profiles;
 use App\Domain\Entities\User as EntitiesUser;
+use App\Domain\Exceptions\CreateUserException;
 use App\Domain\IRepository\IUserRepository;
-use App\Exceptions\CreateUserException;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUser
@@ -33,8 +33,6 @@ class CreateUser
                 $th->getCode()
             ); 
         }
-
-        
     } 
 
     private function generatePasswordHash(string $password): string

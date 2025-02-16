@@ -8,7 +8,7 @@ use App\Application\UseCases\Auth\AuthUser\AuthUser;
 use App\Application\UseCases\Auth\AuthUser\AuthUserInputData;
 use App\Application\UseCases\User\GetUserByEmail\GetUserByEmail;
 use App\Domain\IRepository\IUserRepository;
-use App\Exceptions\UnauthorizedUserException;
+use App\Domain\Exceptions\UnauthorizedUserException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Mockery;

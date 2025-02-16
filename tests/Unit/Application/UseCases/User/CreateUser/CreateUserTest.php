@@ -9,9 +9,9 @@ use App\Application\UseCases\User\CreateUser\CreateUserInputData;
 use App\Domain\IRepository\IUserRepository;
 use Mockery;
 use Tests\TestCase;
-use App\Enums\Profiles;
 use App\Domain\Entities\User as EntitiesUser;
-use App\Exceptions\CreateUserException;
+use App\Domain\Enums\Profiles as EnumsProfiles;
+use App\Domain\Exceptions\CreateUserException;
 use Illuminate\Support\Facades\Hash;
 
 # php artisan test --filter=CreateUserTest
@@ -34,7 +34,7 @@ class CreateUserTest extends TestCase
                 return $user->getName() ===  $createUserInputData->name &&
                        $user->getEmail() ===  $createUserInputData->email &&
                        Hash::check( $createUserInputData->password, $user->getPassword());
-            }), Profiles::CLIENT)
+            }), EnumsProfiles::CLIENT)
             ->andReturnNull();
 
         $createUser = new CreateUser($iUserRepository);
@@ -53,7 +53,7 @@ class CreateUserTest extends TestCase
         $iUserRepository = Mockery::mock(IUserRepository::class);
         $iUserRepository->shouldReceive('createUser')
             ->once()
-            ->with(Mockery::type(EntitiesUser::class), Profiles::CLIENT)
+            ->with(Mockery::type(EntitiesUser::class), EnumsProfiles::CLIENT)
             ->andThrow(new \Exception('Database error'));
 
         $createUser = new CreateUser($iUserRepository);

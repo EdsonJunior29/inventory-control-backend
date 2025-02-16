@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Rules;
+namespace App\Api\Rules;
 
 use App\Models\Profile;
 use Closure;

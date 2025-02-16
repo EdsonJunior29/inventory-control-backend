@@ -3,7 +3,7 @@
 namespace App\Domain\IRepository;
 
 use App\Domain\Entities\User;
-use App\Enums\Profiles;
+use App\Domain\Enums\Profiles;
 use App\Models\User as ModelsUser;
 
 interface IUserRepository

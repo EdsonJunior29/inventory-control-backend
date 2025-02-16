@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Infra\User;
+namespace App\Infra\Repositories\User;
 
 use App\Domain\Entities\User as EntitiesUser;
 use App\Domain\IRepository\IUserRepository;
-use App\Enums\Profiles;
+use App\Domain\Enums\Profiles;
 use App\Models\User;
 
 

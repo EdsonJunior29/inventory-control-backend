@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Api\Http\Requests;
 
-use App\Rules\PasswordRule;
-use App\Rules\ProfileRule;
+use App\Api\Rules\PasswordRule;
+use App\Api\Rules\ProfileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 

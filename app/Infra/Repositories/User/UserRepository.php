@@ -10,6 +10,12 @@ use App\Models\User;
 
 class UserRepository implements IUserRepository
 {
+
+    public function getUserById(int $id): User
+    {
+        return User::find($id);
+    }
+
     public function createUser(EntitiesUser $entitieUser, Profiles $profileType) : void
     {
         $user = User::create([
@@ -26,5 +32,15 @@ class UserRepository implements IUserRepository
         return User::where('email', $entitieUser->getEmail())
             ->with('profiles')
             ->first();
+    }
+
+    public function updateUser(EntitiesUser $entitieUser): void
+    {
+        $user = $this->getUserById($entitieUser->getId());
+
+        $user->name = $entitieUser->getName();
+        $user->email = $entitieUser->getEmail();
+        
+        $user->save();
     }
 }

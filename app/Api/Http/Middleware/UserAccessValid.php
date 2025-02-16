@@ -8,6 +8,7 @@ use App\Application\UseCases\User\GetUserByEmail\GetUserByEmailInputData;
 use App\Domain\Enums\Profiles;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserAccessValid
@@ -35,9 +36,9 @@ class UserAccessValid
         }
 
         $getUserByEmail = app(GetUserByEmail::class);
-        $user = $getUserByEmail->execute(new GetUserByEmailInputData($request->email));
+        $user = $getUserByEmail->execute(new GetUserByEmailInputData((Auth::user()['email'])));
 
-        if ($user->profiles->first()->id !== Profiles::ADMIN) {
+        if ($user->profiles->first()->id !== Profiles::ADMIN->value) {
             return $this->unauthorized(
                 data :  'Unauthorized',
                 message : 'You do not have access to this resource',

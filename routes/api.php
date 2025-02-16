@@ -20,5 +20,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['prefix' => 'users'] , function () {
         Route::post('', [UserController::class, 'store'])->middleware(UserAccessValid::class);
+        Route::put('/{id}', [UserController::class, 'update']);
     });
 });

@@ -7,6 +7,7 @@ use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\Exceptions\InternalServerErrorException;
 use App\Api\Traits\HttpResponses;
+use App\Domain\Exceptions\SupplierNotFoundException;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
@@ -48,19 +49,17 @@ class SupplierController extends Controller
     public function getSupplierById($supplierId)
     {
         try {
-            $supplier = $this->getSupplierByIdUseCases->execute($supplierId); 
-
-            if( $supplier == null) {
-                return $this->success([], 'No supplier found', Response::HTTP_NOT_FOUND);
-            }
-
+            $supplierDto = $this->getSupplierByIdUseCases->execute((int) $supplierId);
+    
+            return $this->success($supplierDto);
+    
+        } catch (SupplierNotFoundException $e) {
+            return $this->error([], $e->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (QueryException $qe) {
             return $this->error([], 'Database query error: ' . $qe->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         } catch (Exception $e) {
             return $this->error([], 'An unexpected error occurred: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $supplier;
         
     }
 

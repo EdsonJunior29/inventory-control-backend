@@ -36,7 +36,7 @@ class UserAccessValid
         }
 
         $getUserByEmail = app(GetUserByEmail::class);
-        $user = $getUserByEmail->execute(new GetUserByEmailInputData((Auth::user()['email'])));
+        $user = $getUserByEmail->execute(new GetUserByEmailInputData($request->email));
 
         if ($user->profiles->first()->id !== Profiles::ADMIN->value) {
             return $this->unauthorized(

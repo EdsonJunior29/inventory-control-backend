@@ -16,6 +16,7 @@ class DeleteSupplierById
     public function execute(int $supplierId)
     {
         $supplierDatabase = $this->querySupplierData($supplierId);
+        
         if($supplierDatabase === null) {
             return $supplierDatabase;
         }

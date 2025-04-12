@@ -3,7 +3,6 @@
 namespace App\Application\UseCases\Supplier\GetSupplierById;
 
 use App\Application\DTOs\SupplierOutputDto;
-use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Domain\IRepository\ISupplierRepository;
 
 class GetSupplierById

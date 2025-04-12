@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Application\DTOs\SupplierOutputDto;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
+use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\IRepository\ISupplierRepository;
-use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
@@ -20,25 +21,35 @@ class GetSupplierByIdTest extends TestCase
     {
         $repoMock = Mockery::mock(ISupplierRepository::class);
 
-        $supplier = new Supplier([
+        $supplierData = [
             'id' => 1, 
             'name' => 'Supplier 1', 
             'email' => 'skyla72@example.net',
-            'phone' => '+1-458-968-8063'
-        ]);
+            'phone' => '+1-458-968-8063',
+            'cnpj' => '12345678901234',
+        ];
+
+        $entitiesSupplier = new EntitiesSupplier(
+            $supplierData['id'], 
+            $supplierData['name'], 
+            $supplierData['email'], 
+            $supplierData['phone'], 
+            $supplierData['cnpj']
+        );
 
         $repoMock->shouldReceive('getSupplierById')
             ->once()
             ->with($supplierId)
-            ->andReturn($supplier);
+            ->andReturn($entitiesSupplier);
         
         $getSupplierByIdUseCase = new GetSupplierById($repoMock);
         $result =  $getSupplierByIdUseCase->execute($supplierId);
 
-        $this->assertInstanceOf(Supplier::class, $result);
-        $this->assertEquals($supplier->name, $result->name);
-        $this->assertEquals($supplier->email, $result->email);
-        $this->assertEquals($supplier->phone, $result->phone);
+        $this->assertInstanceOf(SupplierOutputDto::class, $result);
+        $this->assertEquals($supplierData['name'], $result->name);
+        $this->assertEquals($supplierData['email'], $result->email);
+        $this->assertEquals($supplierData['phone'], $result->phone);
+        $this->assertEquals($supplierData['cnpj'], $result->cnpj);
     }
 
     protected function tearDown(): void

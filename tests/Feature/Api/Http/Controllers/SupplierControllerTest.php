@@ -9,6 +9,7 @@ use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Supplier;
+use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -156,14 +157,23 @@ class SupplierControllerTest extends TestCase
             'id' => $supplierId,
             'name' => 'Supplier Test',
             'email' => 'norval49@example.net',
-            'phone' => '(240) 725-5940'
+            'phone' => '(240) 725-5940',
+            'cnpj' => '12345678000195'
         ]);
+
+        $supplierEntities = new EntitiesSupplier(
+            $supplier->id,
+            $supplier->name,
+            $supplier->email,
+            $supplier->phone,
+            $supplier->cnpj
+        );
 
         // Criar um mock do ISupplierRepository usando Mockery
         $supplierRepositoryMock = Mockery::mock(ISupplierRepository::class);
         $supplierRepositoryMock->shouldReceive('getSupplierById')
             ->with($supplierId)
-            ->andReturn($supplier);
+            ->andReturn($supplierEntities);
         
         $userAccessValidMock = Mockery::mock(UserAccessValid::class);
         $userAccessValidMock->shouldReceive('handle')->andReturnUsing(function (Request $request, $next) {
@@ -180,10 +190,14 @@ class SupplierControllerTest extends TestCase
 
         // Montar o JSON esperado (Retorno da requisição)
         $expectedJson = [
-            "id" => $supplier['id'],
-            "name" => $supplier['name'],
-            "email" => $supplier['email'],
-            "phone" => $supplier['phone']
+            "message" => "Request was successful.",
+            "data" => [
+                "id" => $supplier['id'],
+                "name" => $supplier['name'],
+                "email" => $supplier['email'],
+                "phone" => $supplier['phone'],
+                "cnpj" => $supplier['cnpj'],
+            ]
         ];
 
         // Verificar a resposta da controller

@@ -8,11 +8,11 @@ class SupplierOutputDto
 {
     public int $id;
     public string $name;
-    public string $email;
-    public string $phone;
-    public string $cnpj;
+    public ?string $email;
+    public ?string $phone;
+    public ?string $cnpj;
 
-    public function __construct(int $id, string $name, string $email, string $phone, string $cnpj)
+    public function __construct(int $id, string $name, ?string $email, ?string $phone, ?string $cnpj)
     {
         $this->id = $id;
         $this->name = $name;

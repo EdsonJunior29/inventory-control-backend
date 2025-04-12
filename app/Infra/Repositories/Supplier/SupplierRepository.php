@@ -2,17 +2,42 @@
 
 namespace App\Infra\Repositories\Supplier;
 
+use App\Application\DTOs\SupplierOutputDto;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Domain\IRepository\ISupplierRepository;
 use App\Models\Supplier;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Request;
 
 class SupplierRepository implements ISupplierRepository
 {
     public function getAllSupplier() : LengthAwarePaginator
     {
-        return Supplier::select(['id', 'name'])->paginate(5);
+        $paginator = Supplier::select(['id', 'name'])->paginate(5);
+
+        $entities = $paginator->getCollection()->map(function ($model) {
+            return new EntitiesSupplier(
+                $model->id,
+                $model->name
+            );
+        });
+
+        $supplierEntitiesDtos = $entities->map(function ($supplier) {
+            return SupplierOutputDto::fromEntity($supplier);
+        });
+
+        return new LengthAwarePaginator(
+            $supplierEntitiesDtos,
+            $paginator->total(),
+            $paginator->perPage(),
+            $paginator->currentPage(),
+            [
+                'path' => Request::url(),
+                'query' => Request::query()
+            ]
+        );
+
     }
 
     public function getSupplierById(int $supplierId): ?EntitiesSupplier

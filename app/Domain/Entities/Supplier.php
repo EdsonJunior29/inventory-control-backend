@@ -6,11 +6,11 @@ class Supplier
 {
     private int $id;
     private string $name;
-    private string $email;
-    private string $phone;
-    private string $cnpj;
+    private ?string $email;
+    private ?string $phone;
+    private ?string $cnpj;
 
-    public function __construct(int $id, string $name, string $email, string $phone, string $cnpj)
+    public function __construct(int $id, string $name, ?string $email = null, ?string $phone = null, ?string $cnpj = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -29,17 +29,17 @@ class Supplier
         return $this->name;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function getCnpj(): string
+    public function getCnpj(): ?string
     {
         return $this->cnpj;
     }

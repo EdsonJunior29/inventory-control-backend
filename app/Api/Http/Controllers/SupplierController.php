@@ -33,9 +33,9 @@ class SupplierController extends Controller
     public function getAllSuppliers()
     {
         try {
-            $suppliers = $this->getAllSuppliersUseCases->execute();
+            $suppliersDtos = $this->getAllSuppliersUseCases->execute();
 
-            if($suppliers->isEmpty()) {
+            if(empty($suppliersDtos)) {
                 return $this->success([], 'No suppliers found', Response::HTTP_NOT_FOUND);
             }
 
@@ -43,7 +43,7 @@ class SupplierController extends Controller
             return $this->error([], $qe->getMessage(), $qe->getCode());
         }
 
-        return $suppliers;
+        return $this->success($suppliersDtos, 'Suppliers retrieved successfully', Response::HTTP_OK);
     }
 
     public function getSupplierById($supplierId)

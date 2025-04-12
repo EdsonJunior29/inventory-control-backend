@@ -84,61 +84,64 @@ class SupplierControllerTest extends TestCase
         ])->getJson(route('suppliers.getAll'));
 
         $expectedJson = [
-            "current_page" => 1,
+            "message" => "Suppliers retrieved successfully",
             "data" => [
-                [
-                    "id" => $suppliersData[0]->id,
-                    "name" => $suppliersData[0]->name
+                "data" => [
+                    [
+                        "id" => $suppliersData[0]->id,
+                        "name" => $suppliersData[0]->name
+                    ],
+                    [
+                        "id" => $suppliersData[1]->id,
+                        "name" => $suppliersData[1]->name
+                    ],
+                    [
+                        "id" => $suppliersData[2]->id,
+                        "name" => $suppliersData[2]->name
+                    ],
+                    [
+                        "id" => $suppliersData[3]->id,
+                        "name" => $suppliersData[3]->name
+                    ],
+                    [
+                        "id" => $suppliersData[4]->id,
+                        "name" => $suppliersData[4]->name
+                    ],
                 ],
-                [
-                    "id" => $suppliersData[1]->id,
-                    "name" => $suppliersData[1]->name
+                "current_page" => 1,
+                "first_page_url" => "http://localhost/api/supplier/all-suppliers?page=1",
+                "from" => 1,
+                "last_page" => 2,
+                "last_page_url" => "http://localhost/api/supplier/all-suppliers?page=2",
+                "links" => [
+                    [
+                        "url" => null,
+                        "label" => "&laquo; Previous",
+                        "active" => false
+                    ],
+                    [
+                        "url" => "http://localhost/api/supplier/all-suppliers?page=1",
+                        "label" => "1",
+                        "active" => true
+                    ],
+                    [
+                        "url" => "http://localhost/api/supplier/all-suppliers?page=2",
+                        "label" => "2",
+                        "active" => false
+                    ],
+                    [
+                        "url" => "http://localhost/api/supplier/all-suppliers?page=2",
+                        "label" => "Next &raquo;",
+                        "active" => false
+                    ]
                 ],
-                [
-                    "id" => $suppliersData[2]->id,
-                    "name" => $suppliersData[2]->name
-                ],
-                [
-                    "id" => $suppliersData[3]->id,
-                    "name" => $suppliersData[3]->name
-                ],
-                [
-                    "id" => $suppliersData[4]->id,
-                    "name" => $suppliersData[4]->name
-                ],
-            ],
-            "first_page_url" => "http://localhost/api/supplier/all-suppliers?page=1",
-            "from" => 1,
-            "last_page" => 2,
-            "last_page_url" => "http://localhost/api/supplier/all-suppliers?page=2",
-            "links" => [
-                [
-                    "url" => null,
-                    "label" => "&laquo; Previous",
-                    "active" => false
-                ],
-                [
-                    "url" => "http://localhost/api/supplier/all-suppliers?page=1",
-                    "label" => "1",
-                    "active" => true
-                ],
-                [
-                    "url" => "http://localhost/api/supplier/all-suppliers?page=2",
-                    "label" => "2",
-                    "active" => false
-                ],
-                [
-                    "url" => "http://localhost/api/supplier/all-suppliers?page=2",
-                    "label" => "Next &raquo;",
-                    "active" => false
-                ]
-            ],
-            "next_page_url" => "http://localhost/api/supplier/all-suppliers?page=2",
-            "path" => "http://localhost/api/supplier/all-suppliers",
-            "per_page" => 5,
-            "prev_page_url" => null,
-            "to" => 5,
-            "total" => 7
+                "next_page_url" => "http://localhost/api/supplier/all-suppliers?page=2",
+                "path" => "http://localhost/api/supplier/all-suppliers",
+                "per_page" => 5,
+                "prev_page_url" => null,
+                "to" => 5,
+                "total" => 7
+            ]
         ];
 
         $response->assertStatus(Response::HTTP_OK)

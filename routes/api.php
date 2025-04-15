@@ -16,6 +16,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/all-suplliers', [SupplierController::class, 'getAllSuppliers'])->name('suppliers.getAll');
         Route::get('/{id}', [SupplierController::class, 'getSupplierById'])->name('supplier.getById');
         Route::delete('/{id}', [SupplierController::class, 'deleteSupplierById'])->name('supplier.deleteById');
+        Route::post('', [SupplierController::class, 'store'])->name('supplier.store');
     });
 
     Route::group(['prefix' => 'users'] , function () {

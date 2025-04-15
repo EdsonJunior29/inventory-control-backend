@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Application\DTOs\SupplierOutputDto;
+use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\IRepository\ISupplierRepository;

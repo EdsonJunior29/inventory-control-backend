@@ -2,7 +2,7 @@
 
 namespace App\Infra\Repositories\Supplier;
 
-use App\Application\DTOs\SupplierOutputDto;
+use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Domain\IRepository\ISupplierRepository;
@@ -62,5 +62,23 @@ class SupplierRepository implements ISupplierRepository
     public function deleteSupplierById(int $supplierId)
     {
         return Supplier::destroy($supplierId);
+    }
+
+    public function save($supplierInputDto): EntitiesSupplier
+    {
+        $model = Supplier::create([
+            'name' => $supplierInputDto->name,
+            'email' => $supplierInputDto->email,
+            'phone' => $supplierInputDto->phone,
+            'cnpj' => $supplierInputDto->cnpj
+        ]);
+
+        return new EntitiesSupplier(
+            $model->id,
+            $model->name,
+            $model->email,
+            $model->phone,
+            $model->cnpj
+        );
     }
 }

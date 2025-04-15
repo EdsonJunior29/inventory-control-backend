@@ -2,7 +2,7 @@
 
 namespace App\Application\UseCases\Supplier\GetSupplierById;
 
-use App\Application\DTOs\SupplierOutputDto;
+use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Domain\IRepository\ISupplierRepository;
 
 class GetSupplierById

@@ -8,8 +8,8 @@ use App\Models\User as ModelsUser;
 
 interface IUserRepository
 {
-    public function getUserById(int $id): ModelsUser;
-    public function createUser(User $user, Profiles $profileType) : void;
-    public function getUserByEmail(User $user): ModelsUser;
-    public function updateUser(User $user): void;
+    public function getUserById(int $id): ?ModelsUser;
+    public function createUser(User $user, Profiles $profileType): ModelsUser;
+    public function getUserByEmail(User $user): ?ModelsUser;
+    public function updateUser(User $user): ?ModelsUser;
 }

@@ -6,6 +6,7 @@ use App\Application\UseCases\User\UpdateUser\UpdateUserInputData;
 use App\Domain\Entities\User;
 use App\Domain\Exceptions\UpdateUserException;
 use App\Domain\IRepository\IUserRepository;
+use App\Models\User as ModelsUser;
 
 class UpdateUser
 {
@@ -24,7 +25,7 @@ class UpdateUser
         $userEntity->setEmail($updateUserInputData->email);
 
         try {
-            $this->repo->updateUser($userEntity);
+            return $this->repo->updateUser($userEntity);
         } catch (\Throwable $th) {
             throw new UpdateUserException(
                 $th->getMessage(),

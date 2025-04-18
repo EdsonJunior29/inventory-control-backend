@@ -24,7 +24,7 @@ class UpdateUser
         $userEntity->setEmail($updateUserInputData->email);
 
         try {
-            $this->repo->updateUser($userEntity);
+            return $this->repo->updateUser($userEntity);
         } catch (\Throwable $th) {
             throw new UpdateUserException(
                 $th->getMessage(),

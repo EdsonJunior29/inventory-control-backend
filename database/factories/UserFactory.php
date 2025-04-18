@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Domain\Enums\Profiles;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +29,13 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'password' => Hash::make('password123'),
         ];
+    }
+
+    public function withProfile(Profiles $profile): static
+    {
+        return $this->afterCreating(function (User $user) use ($profile) {
+            $user->profiles()->attach($profile->value);
+        });
     }
 
     /**

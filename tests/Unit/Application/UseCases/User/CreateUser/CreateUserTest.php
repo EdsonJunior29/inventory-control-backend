@@ -6,12 +6,13 @@ namespace Tests\Unit\Application\UseCases\User\CreateUser;
 
 use App\Application\UseCases\User\CreateUser\CreateUser;
 use App\Application\UseCases\User\CreateUser\CreateUserInputData;
+use App\Domain\Entities\User as EntitiesUser;
 use App\Domain\IRepository\IUserRepository;
 use Mockery;
 use Tests\TestCase;
-use App\Domain\Entities\User as EntitiesUser;
 use App\Domain\Enums\Profiles as EnumsProfiles;
 use App\Domain\Exceptions\CreateUserException;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 # php artisan test --filter=CreateUserTest
@@ -25,20 +26,27 @@ class CreateUserTest extends TestCase
             'john@example.com',
             'password123'
         );
-
+    
+        $mockUserModel = Mockery::mock(User::class);
+        $mockUserModel->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $mockUserModel->shouldReceive('getAttribute')->with('name')->andReturn('John Doe');
+        $mockUserModel->shouldReceive('getAttribute')->with('email')->andReturn('john@example.com');
+        
         $iUserRepository = Mockery::mock(IUserRepository::class);
         $iUserRepository
             ->shouldReceive('createUser')
             ->once()
             ->with(Mockery::on(function (EntitiesUser $user) use ($createUserInputData) {
-                return $user->getName() ===  $createUserInputData->name &&
-                       $user->getEmail() ===  $createUserInputData->email &&
-                       Hash::check( $createUserInputData->password, $user->getPassword());
+                return $user->getName() === $createUserInputData->name &&
+                       $user->getEmail() === $createUserInputData->email &&
+                       Hash::check($createUserInputData->password, $user->getPassword());
             }), EnumsProfiles::CLIENT)
-            ->andReturnNull();
-
+            ->andReturn($mockUserModel);
+    
         $createUser = new CreateUser($iUserRepository);
-        $createUser->execute($createUserInputData);
+        $result = $createUser->execute($createUserInputData);
+        
+        $this->assertInstanceOf(User::class, $result);
     }
 
     # php artisan test --filter=CreateUserTest::test_execute_save_user_with_default_profile_throws_exception_on_failure

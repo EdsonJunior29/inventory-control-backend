@@ -104,10 +104,10 @@ class SupplierController extends Controller
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
 
-        } catch (\Throwable $th) {
+        } catch (\Exception $th) {
             return $this->error(
                 [],
-                'An unexpected error occurred: ' . $th->getMessage(), 
+                'Internal server error: ' . $th->getMessage(), 
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

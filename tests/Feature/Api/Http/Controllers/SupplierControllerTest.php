@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers;
 
 use App\Api\Http\Middleware\UserAccessValid;
+use App\Api\Http\Requests\StoreSupplierRequest;
+use App\Application\DTOs\Suppliers\SupplierInputDto;
+use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
+use App\Application\UseCases\Supplier\StoreSupplier\StoreSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Supplier;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Models\User;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -280,5 +285,97 @@ class SupplierControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT)
             ->assertNoContent();
+    }
+
+    # php artisan test --filter=SupplierControllerTest::test_store_supplier_return_success
+    public function test_store_supplier_return_success()
+    {
+        $token = $this->authenticateUser();
+
+        $requestData = [
+            'name' => 'Supplier Name',
+            'email' => 'supplier@example.com',
+            'phone' => '123456789',
+            'cnpj' => '69.337.004/0001-66'
+        ];
+        
+        $supplierOutput = new SupplierOutputDto(
+            id: 1,
+            name: $requestData['name'],
+            email: $requestData['email'],
+            phone: $requestData['phone'],
+            cnpj: $requestData['cnpj'],
+        );
+
+        $storeSupplierUseCases = Mockery::mock(StoreSupplier::class);
+        $storeSupplierUseCases->shouldReceive('execute')
+            ->with(Mockery::type(SupplierInputDto::class))
+            ->andReturn($supplierOutput);
+
+        // Substitui no container
+        $this->app->instance(StoreSupplier::class, $storeSupplierUseCases);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->postJson(env('APP_URL').'/api/supplier', $requestData);
+
+        $response->assertStatus(Response::HTTP_CREATED)
+        ->assertJsonStructure([
+            'message',
+            'data' => [
+                'id',
+                'name',
+                'email',
+                'phone',
+                'cnpj',
+            ]
+        ])
+        ->assertJson([
+            'message' => 'Supplier created successfully',
+            'data' => [
+                'name' => $requestData['name'],
+                'email' => $requestData['email'],
+                'phone' => $requestData['phone'],
+                'cnpj' => $requestData['cnpj']
+            ]
+        ]);
+    }
+
+    # php artisan test --filter=SupplierControllerTest::test_store_supplier_throw_exception
+    public function test_store_supplier_throw_exception()
+    {
+        $token = $this->authenticateUser();
+
+        $requestData = [
+            'name' => 'Supplier Name',
+            'email' => 'supplier@example.com',
+            'phone' => '123456789',
+            'cnpj' => '69.337.004/0001-66'
+        ];
+
+        $storeSupplierUseCases = Mockery::mock(StoreSupplier::class);
+        $storeSupplierUseCases->shouldReceive('execute')
+            ->once()
+            ->with(Mockery::type(SupplierInputDto::class))
+            ->andThrow(new \Exception('An unexpected error occurred'));
+
+        // Substitua a instância no container do Laravel
+        $this->app->instance(StoreSupplier::class, $storeSupplierUseCases);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->postJson(env('APP_URL').'/api/supplier', $requestData);
+
+        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR)
+            ->assertJson([
+                'message' => 'Internal server error: An unexpected error occurred',
+                'data' => []
+            ]);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 }

@@ -6,6 +6,7 @@ use App\Domain\Enums\Profiles;
 use App\Domain\Entities\User as EntitiesUser;
 use App\Domain\Exceptions\CreateUserException;
 use App\Domain\IRepository\IUserRepository;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUser
@@ -17,7 +18,7 @@ class CreateUser
         $this->repo = $iUserRepository;        
     }
 
-    public function execute(CreateUserInputData $inputData): void
+    public function execute(CreateUserInputData $inputData): User
     {
         $user = new EntitiesUser();
 
@@ -26,7 +27,7 @@ class CreateUser
         $user->setPassword($this->generatePasswordHash($inputData->password));
 
         try {
-            $this->repo->createUser($user, Profiles::CLIENT);
+            return $this->repo->createUser($user, Profiles::CLIENT);
         } catch (\Throwable $th) {
             throw new CreateUserException(
                 $th->getMessage(),

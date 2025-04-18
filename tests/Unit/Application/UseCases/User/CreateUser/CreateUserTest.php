@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 # php artisan test --filter=CreateUserTest
 class CreateUserTest extends TestCase
 {
+    # php artisan test --filter=CreateUserTest::test_execute_save_user_with_default_profile
     public function test_execute_save_user_with_default_profile()
     {
         $createUserInputData = new CreateUserInputData(

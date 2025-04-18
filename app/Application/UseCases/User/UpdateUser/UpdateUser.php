@@ -6,7 +6,6 @@ use App\Application\UseCases\User\UpdateUser\UpdateUserInputData;
 use App\Domain\Entities\User;
 use App\Domain\Exceptions\UpdateUserException;
 use App\Domain\IRepository\IUserRepository;
-use App\Models\User as ModelsUser;
 
 class UpdateUser
 {

@@ -10,6 +10,7 @@ use App\Application\DTOs\Suppliers\SupplierInputDto;
 use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Application\UseCases\Supplier\StoreSupplier\StoreSupplier;
+use App\Application\UseCases\Supplier\UpdateSupplier\UpdateSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Supplier;
@@ -366,6 +367,67 @@ class SupplierControllerTest extends TestCase
             'Authorization' => 'Bearer ' . $token
         ])->postJson(env('APP_URL').'/api/supplier', $requestData);
 
+        $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR)
+            ->assertJson([
+                'message' => 'Internal server error: An unexpected error occurred',
+                'data' => []
+            ]);
+    }
+
+    # php artisan test --filter=SupplierControllerTest::test_update_supplier_return_success
+    public function test_update_supplier_return_success()
+    {
+        $token = $this->authenticateUser();
+
+        $supplierId = 1;
+
+        $requestData = [
+            'name' => 'Updated Supplier Name',
+            'email' => 'teste@teste.com',
+            'phone' => '987654321',
+        ];
+
+        $updateSupplierUseCases = Mockery::mock(UpdateSupplier::class);
+        $updateSupplierUseCases->shouldReceive('execute')
+            ->with($supplierId, $requestData)
+            ->andReturn(true);
+            
+        $this->app->instance(UpdateSupplier::class, $updateSupplierUseCases);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->putJson(env('APP_URL').'/api/supplier/1', $requestData);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'message' => 'Supplier updated successfully',
+                'data' => true
+            ]);
+    }
+
+    # php artisan test --filter=SupplierControllerTest::test_update_supplier_throw_exception
+    public function test_update_supplier_throw_exception()
+    {
+        $token = $this->authenticateUser();
+
+        $supplierId = 1;
+
+        $requestData = [
+            'name' => 'Updated Supplier Name',
+            'email' => 'teste@teste.com',
+            'phone' => '987654321',
+        ];
+        $updateSupplierUseCases = Mockery::mock(UpdateSupplier::class);
+        $updateSupplierUseCases->shouldReceive('execute')
+            ->with($supplierId, $requestData)
+            ->andThrow(new \Exception('An unexpected error occurred'));
+
+        $this->app->instance(UpdateSupplier::class, $updateSupplierUseCases);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->putJson(env('APP_URL').'/api/supplier/1', $requestData);
+        
         $response->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR)
             ->assertJson([
                 'message' => 'Internal server error: An unexpected error occurred',

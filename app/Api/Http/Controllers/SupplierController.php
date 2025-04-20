@@ -3,6 +3,7 @@
 namespace App\Api\Http\Controllers;
 
 use App\Api\Http\Requests\StoreSupplierRequest;
+use App\Api\Http\Requests\UpdateSupplierRequest;
 use App\Application\UseCases\Supplier\DeleteSupplierById\DeleteSupplierById;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
@@ -10,6 +11,7 @@ use App\Domain\Exceptions\InternalServerErrorException;
 use App\Api\Traits\HttpResponses;
 use App\Application\DTOs\Suppliers\SupplierInputDto;
 use App\Application\UseCases\Supplier\StoreSupplier\StoreSupplier;
+use App\Application\UseCases\Supplier\UpdateSupplier\UpdateSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -23,17 +25,20 @@ class SupplierController extends Controller
     private $getSupplierByIdUseCases;
     private $deleteSupplierByIdUseCases;
     private $storeSupplierUseCases;
+    private $updateSupplierUseCases;
 
     public function __construct(
         GetAllSupplier $getAllSuppliers, 
         GetSupplierById $getSupplierById,
         DeleteSupplierById $deleteSupplierById,
-        StoreSupplier $storeSupplier
+        StoreSupplier $storeSupplier,
+        UpdateSupplier $updateSupplier
     ) {
         $this->getAllSuppliersUseCases = $getAllSuppliers;
         $this->getSupplierByIdUseCases = $getSupplierById;
         $this->deleteSupplierByIdUseCases = $deleteSupplierById;
         $this->storeSupplierUseCases = $storeSupplier;
+        $this->updateSupplierUseCases = $updateSupplier;
     }
 
     public function getAllSuppliers()
@@ -111,5 +116,33 @@ class SupplierController extends Controller
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
+
+    public function update($supplierId, UpdateSupplierRequest $request)
+    {
+        try {
+            $updated = $this->updateSupplierUseCases->execute((int) $supplierId, $request->all());
+            
+            return $this->success(
+                $updated,
+                'Supplier updated successfully',
+                Response::HTTP_OK
+            );
+            
+        } catch (QueryException $qe) {
+            return $this->error(
+                [], 
+                'Database query error: ' . $qe->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+
+        } catch (\Exception $th) {
+            return $this->error(
+                [],
+                'Internal server error: ' . $th->getMessage(), 
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+        
     }
 }

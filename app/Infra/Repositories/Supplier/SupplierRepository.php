@@ -81,4 +81,15 @@ class SupplierRepository implements ISupplierRepository
             $model->cnpj
         );
     }
+
+    public function update(int $supplierId, array $data): bool
+    {
+        $model = Supplier::find($supplierId);
+
+        if (!$model) {
+            throw new SupplierNotFoundException($supplierId);
+        }
+
+        return $model->update($data);
+    }
 }

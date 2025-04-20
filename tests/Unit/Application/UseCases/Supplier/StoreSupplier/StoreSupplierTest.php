@@ -26,8 +26,7 @@ class StoreSupplierTest extends TestCase
     }
 
     # php artisan test --filter=StoreSupplierTest::it_stores_a_supplier_successfully
-    /** @test */
-    public function it_stores_a_supplier_successfully()
+    public function test_stores_a_supplier_successfully()
     {
         $inputDto = new SupplierInputDto(
             name: 'Fornecedor Teste',
@@ -61,9 +60,8 @@ class StoreSupplierTest extends TestCase
         $this->assertEquals($expectedOutputDto->cnpj, $result->cnpj);
     }
 
-    # php artisan test --filter=StoreSupplierTest::it_handles_repository_exception
-    /** @test */
-    public function it_handles_repository_exception()
+    # php artisan test --filter=StoreSupplierTest::test_handles_repository_exception
+    public function test_handles_repository_exception()
     {
         $inputDto = new SupplierInputDto(
             name: 'Fornecedor Teste',
@@ -86,9 +84,8 @@ class StoreSupplierTest extends TestCase
         $this->storeSupplierUseCase->execute($inputDto);
     }
 
-    # php artisan test --filter=StoreSupplierTest::it_creates_supplier_with_minimal_required_data
-    /** @test */
-    public function it_creates_supplier_with_minimal_required_data()
+    # php artisan test --filter=StoreSupplierTest::test_creates_supplier_with_minimal_required_data
+    public function test_creates_supplier_with_minimal_required_data()
     {
         //Arrange
         $inputDto = new SupplierInputDto(

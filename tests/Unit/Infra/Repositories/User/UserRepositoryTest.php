@@ -24,9 +24,8 @@ class UserRepositoryTest extends TestCase
         $this->repository = new UserRepository();
     }
 
-    # php artisan test --filter=UserRepositoryTest::it_getUserById_returns_user_when_exists
-    /** @test */
-    public function it_getUserById_returns_user_when_exists()
+    # php artisan test --filter=UserRepositoryTest::test_getUserById_returns_user_when_exists
+    public function teste_getUserById_returns_user_when_exists()
     {
         $user = User::factory()->create();
 
@@ -36,18 +35,16 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals($user->id, $result->id);
     }
 
-    # php artisan test --filter=UserRepositoryTest::it_getUserById_returns_null_when_not_exists
-    /** @test */
-    public function it_getUserById_returns_null_when_not_exists()
+    # php artisan test --filter=UserRepositoryTest::test_getUserById_returns_null_when_not_exists
+    public function test_getUserById_returns_null_when_not_exists()
     {
         $result = $this->repository->getUserById(9999);
 
         $this->assertNull($result);
     }
 
-    # php artisan test --filter=UserRepositoryTest::it_create_user_creates_user_with_profile
-    /** @test */
-    public function it_create_user_creates_user_with_profile()
+    # php artisan test --filter=UserRepositoryTest::test_create_user_creates_user_with_profile
+    public function test_create_user_creates_user_with_profile()
     {
         //Utilizando o seeder para criar o perfil Admin e o Usuário
         $this->seed(ProfilesAndUsersSeeder::class);
@@ -68,9 +65,8 @@ class UserRepositoryTest extends TestCase
         $this->assertTrue($user->profiles->contains(Profiles::ADMIN->value));
     }
 
-    # php artisan test --filter=UserRepositoryTest::it_getUserByEmail_returns_null_when_not_exists
-    /** @test */
-    public function it_getUserByEmail_returns_null_when_not_exists()
+    # php artisan test --filter=UserRepositoryTest::test_getUserByEmail_returns_null_when_not_exists
+    public function test_getUserByEmail_returns_null_when_not_exists()
     {
         $entityUser = new EntitiesUser();
         $entityUser->setName('Inexistente');
@@ -82,9 +78,8 @@ class UserRepositoryTest extends TestCase
         $this->assertNull($result);
     }
 
-    # php artisan test --filter=UserRepositoryTest::it_updateUser_updates_user_data
-    /** @test */
-    public function it_updateUser_updates_user_data()
+    # php artisan test --filter=UserRepositoryTest::test_updateUser_updates_user_data
+    public function test_updateUser_updates_user_data()
     {
         $user = User::factory()->create([
             'name' => 'Nome Antigo',
@@ -104,9 +99,8 @@ class UserRepositoryTest extends TestCase
         $this->assertEquals('novo@email.com', $updatedUser->email);
     }
 
-    # php artisan test --filter=UserRepositoryTest::it_updateUser_throws_exception_when_user_not_found
-    /** @test */
-    public function it_updateUser_throws_exception_when_user_not_found()
+    # php artisan test --filter=UserRepositoryTest::test_updateUser_throws_exception_when_user_not_found
+    public function test_updateUser_throws_exception_when_user_not_found()
     {
         $this->expectException(UserNotFoundException::class);
 

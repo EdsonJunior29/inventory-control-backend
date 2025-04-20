@@ -9,6 +9,7 @@ use App\Infra\Repositories\Supplier\SupplierRepository;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Mockery;
 use Tests\TestCase;
 
 # php artisan test --filter=SupplierRepositoryTest
@@ -24,9 +25,8 @@ class SupplierRepositoryTest extends TestCase
         $this->repository = new SupplierRepository();
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_getAllSupplier_returns_paginated_results
-    /** @test */
-    public function it_getAllSupplier_returns_paginated_results()
+    # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_paginated_results
+    public function test_getAllSupplier_returns_paginated_results()
     {
         Supplier::factory()->count(15)->create();
 
@@ -37,9 +37,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertEquals(15, $result->total());
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_getAllSupplier_returns_correct_dto_structure
-    /** @test */
-    public function it_getAllSupplier_returns_correct_dto_structure()
+    # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_correct_dto_structure
+    public function test_getAllSupplier_returns_correct_dto_structure()
     {
         Supplier::factory()->create([
             'name' => 'Fornecedor DTO Test'
@@ -51,9 +50,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertObjectHasProperty('id', $result->items()[0]);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_getAllSupplier_returns_only_non_deleted_suppliers
-    /** @test */
-    public function it_getAllSupplier_returns_only_non_deleted_suppliers()
+    # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_only_non_deleted_suppliers
+    public function test_getAllSupplier_returns_only_non_deleted_suppliers()
     {
         Supplier::factory()->create(['name' => 'Ativo']);
         $deletedSupplier = Supplier::factory()->create(['name' => 'Deletado']);
@@ -66,9 +64,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertEquals('Ativo', $result->items()[0]->name);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_getSupplierById_returns_correct_entity
-    /** @test */
-    public function it_getSupplierById_returns_correct_entity()
+    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_returns_correct_entity
+    public function test_getSupplierById_returns_correct_entity()
     {
        $supplier = Supplier::factory()->create([
            'name' => 'Fornecedor para Busca'
@@ -79,17 +76,15 @@ class SupplierRepositoryTest extends TestCase
        $this->assertEquals('Fornecedor para Busca', $entity->getName());
     }
  
-    # php artisan test --filter=SupplierRepositoryTest::it_getSupplierById_throws_exception_when_not_found
-    /** @test */
-    public function it_getSupplierById_throws_exception_when_not_found()
+    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_throws_exception_when_not_found
+    public function test_getSupplierById_throws_exception_when_not_found()
     {
         $this->expectException(SupplierNotFoundException::class);
         $this->repository->getSupplierById(9999);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_deleteSupplierById_marks_as_deleted
-    /** @test */
-    public function it_deleteSupplierById_marks_as_deleted()
+    # php artisan test --filter=SupplierRepositoryTest::test_deleteSupplierById_marks_as_deleted
+    public function test_deleteSupplierById_marks_as_deleted()
     {
         $supplier = Supplier::factory()->create();
 
@@ -99,9 +94,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertSoftDeleted($supplier);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_deleteSupplierById_returns_zero_when_already_deleted
-    /** @test */
-    public function it_deleteSupplierById_returns_zero_when_already_deleted()
+    # php artisan test --filter=SupplierRepositoryTest::test_deleteSupplierById_returns_zero_when_already_deleted
+    public function test_deleteSupplierById_returns_zero_when_already_deleted()
     {
         $supplier = Supplier::factory()->create();
         $supplier->delete();
@@ -111,9 +105,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::it_save_creates_new_supplier_and_returns_entit
-    /** @test */
-    public function it_save_creates_new_supplier_and_returns_entity()
+    # php artisan test --filter=SupplierRepositoryTest::test_save_creates_new_supplier_and_returns_entit
+    public function test_save_creates_new_supplier_and_returns_entity()
     {
         $inputDto = new SupplierInputDto(
             name: 'Fornecedor SQLite',
@@ -131,4 +124,44 @@ class SupplierRepositoryTest extends TestCase
         ]);
     }
     
+    # php artisan test --filter=SupplierRepositoryTest::test_update_updates_supplier_and_returns_true
+    public function test_update_updates_supplier_and_returns_true()
+    {
+        // Arrange
+        $supplier = Supplier::factory()->create([
+            'name' => 'Original Name',
+            'email' => 'original@example.com',
+            'phone' => '1234567890',
+            'cnpj' => '12345678901234'
+        ]);
+
+        $updateData = [
+            'name' => 'Updated Name',
+            'email' => 'updated@example.com'
+        ];
+
+        // Act
+        $result = $this->repository->update($supplier->id, $updateData);
+
+        // Assert
+        $this->assertTrue($result);
+        $updatedSupplier = Supplier::find($supplier->id);
+        $this->assertEquals('Updated Name', $updatedSupplier->name);
+        $this->assertEquals('updated@example.com', $updatedSupplier->email);
+    }
+
+    # php artisan test --filter=SupplierRepositoryTest::test_update_throws_exception_when_supplier_not_found
+    public function test_update_throws_exception_when_supplier_not_found()
+    {
+        // Arrange
+        $nonExistentId = 9999;
+
+        // Assert
+        $this->expectException(SupplierNotFoundException::class);
+        $this->expectExceptionMessage("Supplier with ID {$nonExistentId} not found");
+
+        // Act
+        $this->repository->update($nonExistentId, ['name' => 'Test']);
+    }
+
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
 use App\Application\DTOs\Suppliers\SupplierOutputDto;
+use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\UseCases\Supplier\StoreSupplier\StoreSupplier;
 use App\Domain\Entities\Supplier;
 use App\Domain\IRepository\ISupplierRepository;
@@ -25,7 +26,7 @@ class StoreSupplierTest extends TestCase
         $this->storeSupplierUseCase = new StoreSupplier($this->supplierRepositoryMock);
     }
 
-    # php artisan test --filter=StoreSupplierTest::it_stores_a_supplier_successfully
+    # php artisan test --filter=StoreSupplierTest::test_stores_a_supplier_successfully
     public function test_stores_a_supplier_successfully()
     {
         $inputDto = new SupplierInputDto(
@@ -35,29 +36,20 @@ class StoreSupplierTest extends TestCase
             cnpj: '11.222.333/0001-44'
         );
         
-        $supplierEntity = new Supplier(
-            id: 1,
-            name: $inputDto->name,
-            email: $inputDto->email,
-            phone: $inputDto->phone,
-            cnpj: $inputDto->cnpj,
-        );
-        
-        $expectedOutputDto = SupplierOutputDto::fromEntity($supplierEntity);
+        $supplierResource = new SupplierByIdResources($inputDto);
         
         $this->supplierRepositoryMock->shouldReceive('save')
             ->once()
             ->with(Mockery::type(SupplierInputDto::class))
-            ->andReturn($supplierEntity);
+            ->andReturn($supplierResource);
 
         $result = $this->storeSupplierUseCase->execute($inputDto);
 
-        $this->assertInstanceOf(SupplierOutputDto::class, $result);
-        $this->assertEquals($expectedOutputDto->id, $result->id);
-        $this->assertEquals($expectedOutputDto->name, $result->name);
-        $this->assertEquals($expectedOutputDto->email, $result->email);
-        $this->assertEquals($expectedOutputDto->phone, $result->phone);
-        $this->assertEquals($expectedOutputDto->cnpj, $result->cnpj);
+        $this->assertInstanceOf(SupplierByIdResources::class, $result);
+        $this->assertEquals($inputDto->name, $result->resource->name);
+        $this->assertEquals($inputDto->email, $result->resource->email);
+        $this->assertEquals($inputDto->phone, $result->resource->phone);
+        $this->assertEquals($inputDto->cnpj, $result->resource->cnpj);
     }
 
     # php artisan test --filter=StoreSupplierTest::test_handles_repository_exception
@@ -95,31 +87,21 @@ class StoreSupplierTest extends TestCase
             cnpj: '11.222.333/0001-44'
         );
 
-        $supplierEntity = new Supplier(
-            id: 2,
-            name: $inputDto->name,
-            email: $inputDto->email,
-            phone: $inputDto->phone,
-            cnpj: $inputDto->cnpj,
-        );
+        $supplierResource = new SupplierByIdResources($inputDto);
 
-        $expectedOutputDto = SupplierOutputDto::fromEntity($supplierEntity);
-
-        // Expectativas
         $this->supplierRepositoryMock->shouldReceive('save')
             ->once()
             ->with(Mockery::type(SupplierInputDto::class))
-            ->andReturn($supplierEntity);
+            ->andReturn($supplierResource);
 
         // Act
         $result = $this->storeSupplierUseCase->execute($inputDto);
 
         // Assert
-        $this->assertInstanceOf(SupplierOutputDto::class, $result);
-        $this->assertEquals($expectedOutputDto->id, $result->id);
-        $this->assertEquals($expectedOutputDto->name, $result->name);
-        $this->assertNull($result->email);
-        $this->assertNull($result->phone);
-        $this->assertEquals($expectedOutputDto->cnpj, $result->cnpj);
+        $this->assertInstanceOf(SupplierByIdResources::class, $result);
+        $this->assertEquals($inputDto->name, $result->resource->name);
+        $this->assertNull($result->resource->email);
+        $this->assertNull($result->resource->phone);
+        $this->assertEquals($inputDto->cnpj, $result->resource->cnpj);
     }
 }

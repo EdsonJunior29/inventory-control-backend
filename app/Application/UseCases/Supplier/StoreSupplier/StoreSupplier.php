@@ -3,7 +3,6 @@
 namespace App\Application\UseCases\Supplier\StoreSupplier;
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
-use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Domain\IRepository\ISupplierRepository;
 
 class StoreSupplier
@@ -15,10 +14,8 @@ class StoreSupplier
         $this->supplierRepository = $supplierRepository;
     }
 
-    public function execute(SupplierInputDto $supplierInputDto): SupplierOutputDto
+    public function execute(SupplierInputDto $supplierInputDto)
     {
-        $supplier = $this->supplierRepository->save($supplierInputDto);
-
-        return SupplierOutputDto::fromEntity($supplier);
+        return $this->supplierRepository->save($supplierInputDto);
     }
 }

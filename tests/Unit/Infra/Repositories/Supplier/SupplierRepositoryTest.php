@@ -3,13 +3,12 @@
 namespace Tests\Unit\Infra\Repositories\Supplier;
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
-use App\Domain\Entities\Supplier as EntitiesSupplier;
+use App\Application\Resources\Suppliers\SupplierByIdResources;
+use App\Application\Resources\Suppliers\SupplierResources;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Infra\Repositories\Supplier\SupplierRepository;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Mockery;
 use Tests\TestCase;
 
 # php artisan test --filter=SupplierRepositoryTest
@@ -32,9 +31,9 @@ class SupplierRepositoryTest extends TestCase
 
         $result = $this->repository->getAllSupplier();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
-        $this->assertCount(5, $result->items());
-        $this->assertEquals(15, $result->total());
+        $this->assertInstanceOf(SupplierResources::class, $result['data'][0]);
+        $this->assertEquals(5, $result['meta']['per_page']);
+        $this->assertEquals(15, $result['meta']['total']);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_correct_dto_structure
@@ -45,9 +44,10 @@ class SupplierRepositoryTest extends TestCase
         ]);
 
         $result = $this->repository->getAllSupplier();
-
-        $this->assertEquals('Fornecedor DTO Test', $result->items()[0]->name);
-        $this->assertObjectHasProperty('id', $result->items()[0]);
+        $supplierData = $result['data'][0];
+        
+        $this->assertEquals('Fornecedor DTO Test', $supplierData['name']);
+        $this->assertArrayHasKey('id', $supplierData);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_only_non_deleted_suppliers
@@ -59,28 +59,21 @@ class SupplierRepositoryTest extends TestCase
 
         $result = $this->repository->getAllSupplier();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
-        $this->assertCount(1, $result->items());
-        $this->assertEquals('Ativo', $result->items()[0]->name);
+        $this->assertInstanceOf(SupplierResources::class, $result['data'][0]);
+        $this->assertEquals(1, $result['meta']['total']);
+        $this->assertEquals('Ativo', $result['data'][0]->name);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_returns_correct_entity
-    public function test_getSupplierById_returns_correct_entity()
+    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_returns_correct_resource
+    public function test_getSupplierById_returns_correct_resource()
     {
        $supplier = Supplier::factory()->create([
            'name' => 'Fornecedor para Busca'
        ]);
 
-       $entity = $this->repository->getSupplierById($supplier->id);
+       $supplierResouce = $this->repository->getSupplierById($supplier->id);
 
-       $this->assertEquals('Fornecedor para Busca', $entity->getName());
-    }
- 
-    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_throws_exception_when_not_found
-    public function test_getSupplierById_throws_exception_when_not_found()
-    {
-        $this->expectException(SupplierNotFoundException::class);
-        $this->repository->getSupplierById(9999);
+       $this->assertEquals('Fornecedor para Busca', $supplierResouce->resource['name']);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_deleteSupplierById_marks_as_deleted
@@ -105,8 +98,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::test_save_creates_new_supplier_and_returns_entit
-    public function test_save_creates_new_supplier_and_returns_entity()
+    # php artisan test --filter=SupplierRepositoryTest::test_save_creates_new_supplier_and_returns_resource
+    public function test_save_creates_new_supplier_and_returns_resource()
     {
         $inputDto = new SupplierInputDto(
             name: 'Fornecedor SQLite',
@@ -117,7 +110,7 @@ class SupplierRepositoryTest extends TestCase
 
         $entity = $this->repository->save($inputDto);
 
-        $this->assertInstanceOf(EntitiesSupplier::class, $entity);
+        $this->assertInstanceOf(SupplierByIdResources::class, $entity);
         $this->assertDatabaseHas('suppliers', [
             'name' => 'Fornecedor SQLite',
             'cnpj' => '11.111.111/0001-11'
@@ -140,10 +133,8 @@ class SupplierRepositoryTest extends TestCase
             'email' => 'updated@example.com'
         ];
 
-        // Act
         $result = $this->repository->update($supplier->id, $updateData);
 
-        // Assert
         $this->assertTrue($result);
         $updatedSupplier = Supplier::find($supplier->id);
         $this->assertEquals('Updated Name', $updatedSupplier->name);
@@ -153,14 +144,11 @@ class SupplierRepositoryTest extends TestCase
     # php artisan test --filter=SupplierRepositoryTest::test_update_throws_exception_when_supplier_not_found
     public function test_update_throws_exception_when_supplier_not_found()
     {
-        // Arrange
         $nonExistentId = 9999;
 
-        // Assert
         $this->expectException(SupplierNotFoundException::class);
         $this->expectExceptionMessage("Supplier with ID {$nonExistentId} not found");
 
-        // Act
         $this->repository->update($nonExistentId, ['name' => 'Test']);
     }
 

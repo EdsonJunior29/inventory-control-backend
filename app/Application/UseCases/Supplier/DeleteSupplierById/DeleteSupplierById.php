@@ -21,7 +21,7 @@ class DeleteSupplierById
             return $supplierDatabase;
         }
 
-        $this->repo->deleteSupplierById($supplierDatabase->getId());
+        $this->repo->deleteSupplierById($supplierDatabase->id);
     }
 
     public function querySupplierData(int $supplierId)

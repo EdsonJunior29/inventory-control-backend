@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Application\DTOs\Suppliers\SupplierOutputDto;
+use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
-use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -29,27 +28,20 @@ class GetSupplierByIdTest extends TestCase
             'cnpj' => '12345678901234',
         ];
 
-        $entitiesSupplier = new EntitiesSupplier(
-            $supplierData['id'], 
-            $supplierData['name'], 
-            $supplierData['email'], 
-            $supplierData['phone'], 
-            $supplierData['cnpj']
-        );
+        $supplierResource = new SupplierByIdResources($supplierData);
 
         $repoMock->shouldReceive('getSupplierById')
             ->once()
             ->with($supplierId)
-            ->andReturn($entitiesSupplier);
+            ->andReturn($supplierResource);
         
         $getSupplierByIdUseCase = new GetSupplierById($repoMock);
         $result =  $getSupplierByIdUseCase->execute($supplierId);
-
-        $this->assertInstanceOf(SupplierOutputDto::class, $result);
-        $this->assertEquals($supplierData['name'], $result->name);
-        $this->assertEquals($supplierData['email'], $result->email);
-        $this->assertEquals($supplierData['phone'], $result->phone);
-        $this->assertEquals($supplierData['cnpj'], $result->cnpj);
+        
+        $this->assertEquals($supplierData['name'], $result->resource['name']);
+        $this->assertEquals($supplierData['email'], $result->resource['email']);
+        $this->assertEquals($supplierData['phone'], $result->resource['phone']);
+        $this->assertEquals($supplierData['cnpj'], $result->resource['cnpj']);
     }
 
     protected function tearDown(): void

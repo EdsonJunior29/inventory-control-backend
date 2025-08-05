@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\UseCases\Supplier\DeleteSupplierById\DeleteSupplierById;
 use App\Domain\IRepository\ISupplierRepository;
 use App\Models\Supplier;
-use App\Domain\Entities\Supplier as EntitiesSupplier;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -38,19 +38,13 @@ class DeleteSupplierByIdTest extends TestCase
             'cnpj' => '12345678901234',
         ]);
 
-        $supplierEntities = new EntitiesSupplier(
-            $supplier->id,
-            $supplier->name,
-            $supplier->email,
-            $supplier->phone,
-            $supplier->cnpj
-        );
+        $supplierResource = new SupplierByIdResources($supplier);
 
         $this->supplierRepositoryMock
            ->shouldReceive('getSupplierById')
            ->once()
            ->with($supplierId)
-           ->andReturn($supplierEntities);
+           ->andReturn($supplierResource);
 
         $this->supplierRepositoryMock
            ->shouldReceive('deleteSupplierById')

@@ -23,7 +23,7 @@ class ProductSeeder extends Seeder
         if (Status::count() === 0) {
             $this->call(StatusSeeder::class);
         }
-
+        
         Product::factory()->count(20)->create([
             'supplier_id' => function() {
                 return Supplier::inRandomOrder()->first()->id;
@@ -34,6 +34,13 @@ class ProductSeeder extends Seeder
             'status_id' => function() {
                 return Status::inRandomOrder()->first()->id;
             },
-        ]);
+        ])->each(function ($product) {
+            // Adiciona mais fornecedores (aleatórios, incluindo o que já foi associado ou não)
+            $suppliers = Supplier::inRandomOrder()
+                ->take(rand(1, 3))
+                ->pluck('id');
+            
+            $product->suppliers()->sync($suppliers);
+        });
     }
 }

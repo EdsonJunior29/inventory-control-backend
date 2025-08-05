@@ -3,13 +3,13 @@
 namespace Tests\Unit\Infra\Repositories\Supplier;
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
+use App\Application\Resources\Suppliers\SupplierResources;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Infra\Repositories\Supplier\SupplierRepository;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Mockery;
 use Tests\TestCase;
 
 # php artisan test --filter=SupplierRepositoryTest
@@ -32,9 +32,9 @@ class SupplierRepositoryTest extends TestCase
 
         $result = $this->repository->getAllSupplier();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
-        $this->assertCount(5, $result->items());
-        $this->assertEquals(15, $result->total());
+        $this->assertInstanceOf(SupplierResources::class, $result['data'][0]);
+        $this->assertEquals(5, $result['meta']['per_page']);
+        $this->assertEquals(15, $result['meta']['total']);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_correct_dto_structure
@@ -45,9 +45,10 @@ class SupplierRepositoryTest extends TestCase
         ]);
 
         $result = $this->repository->getAllSupplier();
-
-        $this->assertEquals('Fornecedor DTO Test', $result->items()[0]->name);
-        $this->assertObjectHasProperty('id', $result->items()[0]);
+        $supplierData = $result['data'][0];
+        
+        $this->assertEquals('Fornecedor DTO Test', $supplierData['name']);
+        $this->assertArrayHasKey('id', $supplierData);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_getAllSupplier_returns_only_non_deleted_suppliers
@@ -59,9 +60,9 @@ class SupplierRepositoryTest extends TestCase
 
         $result = $this->repository->getAllSupplier();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
-        $this->assertCount(1, $result->items());
-        $this->assertEquals('Ativo', $result->items()[0]->name);
+        $this->assertInstanceOf(SupplierResources::class, $result['data'][0]);
+        $this->assertEquals(1, $result['meta']['total']);
+        $this->assertEquals('Ativo', $result['data'][0]->name);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_returns_correct_entity

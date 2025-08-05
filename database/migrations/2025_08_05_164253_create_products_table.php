@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->integer('quantity_in_stock')->default(0);
             $table->string('serial_number')->unique()->max(255);
-            $table->foreignId('supplier_id')->constrained()->onDelete('cascade');
             $table->date('date_of_acquisition')->nullable();
             $table->foreignId('status_id')->constrained()->onDelete('cascade')->default(1);
             $table->timestamps();

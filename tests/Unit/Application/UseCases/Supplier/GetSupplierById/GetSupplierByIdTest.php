@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\IRepository\ISupplierRepository;

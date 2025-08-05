@@ -34,7 +34,7 @@ class SupplierRepository implements ISupplierRepository
         return Supplier::destroy($supplierId);
     }
 
-    public function save($supplierInputDto): EntitiesSupplier
+    public function save($supplierInputDto)
     {
         $model = Supplier::create([
             'name' => $supplierInputDto->name,
@@ -43,13 +43,7 @@ class SupplierRepository implements ISupplierRepository
             'cnpj' => $supplierInputDto->cnpj
         ]);
 
-        return new EntitiesSupplier(
-            $model->id,
-            $model->name,
-            $model->email,
-            $model->phone,
-            $model->cnpj
-        );
+        return new SupplierByIdResources($model);
     }
 
     public function update(int $supplierId, array $data): bool

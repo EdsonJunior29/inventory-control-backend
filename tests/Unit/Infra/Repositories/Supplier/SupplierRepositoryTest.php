@@ -3,8 +3,8 @@
 namespace Tests\Unit\Infra\Repositories\Supplier;
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
+use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\Resources\Suppliers\SupplierResources;
-use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Infra\Repositories\Supplier\SupplierRepository;
 use App\Models\Supplier;
@@ -98,8 +98,8 @@ class SupplierRepositoryTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::test_save_creates_new_supplier_and_returns_entit
-    public function test_save_creates_new_supplier_and_returns_entity()
+    # php artisan test --filter=SupplierRepositoryTest::test_save_creates_new_supplier_and_returns_resource
+    public function test_save_creates_new_supplier_and_returns_resource()
     {
         $inputDto = new SupplierInputDto(
             name: 'Fornecedor SQLite',
@@ -110,7 +110,7 @@ class SupplierRepositoryTest extends TestCase
 
         $entity = $this->repository->save($inputDto);
 
-        $this->assertInstanceOf(EntitiesSupplier::class, $entity);
+        $this->assertInstanceOf(SupplierByIdResources::class, $entity);
         $this->assertDatabaseHas('suppliers', [
             'name' => 'Fornecedor SQLite',
             'cnpj' => '11.111.111/0001-11'

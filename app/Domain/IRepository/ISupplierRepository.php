@@ -14,7 +14,7 @@ interface ISupplierRepository
 
     public function deleteSupplierById(int $supplierId);
 
-    public function save(SupplierInputDto $supplierInputDto): Supplier;
+    public function save(SupplierInputDto $supplierInputDto);
 
     public function update(int $supplierId, array $data): bool;
 }

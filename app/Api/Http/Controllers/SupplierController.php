@@ -44,32 +44,50 @@ class SupplierController extends Controller
     public function getAllSuppliers()
     {
         try {
-            $suppliersDtos = $this->getAllSuppliersUseCases->execute();
+            $suppliers = $this->getAllSuppliersUseCases->execute();
 
-            if(empty($suppliersDtos)) {
-                return $this->success([], 'No suppliers found', Response::HTTP_NOT_FOUND);
+            if(empty($suppliers)) {
+                return $this->success(
+                    [],
+                    'No suppliers found',
+                    Response::HTTP_NOT_FOUND
+                );
             }
 
         } catch (QueryException $qe) {
             return $this->error([], $qe->getMessage(), $qe->getCode());
         }
 
-        return $this->success($suppliersDtos, 'Suppliers retrieved successfully', Response::HTTP_OK);
+        return $this->success($suppliers, 'Suppliers retrieved successfully', Response::HTTP_OK);
     }
 
     public function getSupplierById($supplierId)
     {
         try {
-            $supplierDto = $this->getSupplierByIdUseCases->execute((int) $supplierId);
+            $supplier = $this->getSupplierByIdUseCases->execute((int) $supplierId);
+
+            if (!$supplier) {
+                return $this->success(
+                    $supplier,
+                    'No supplier found with this ID', 
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            return $this->success($supplier);
     
-            return $this->success($supplierDto);
-    
-        } catch (SupplierNotFoundException $e) {
-            return $this->error([], $e->getMessage(), Response::HTTP_NOT_FOUND);
         } catch (QueryException $qe) {
-            return $this->error([], 'Database query error: ' . $qe->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(
+                [], 
+                'Database query error: ' . $qe->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         } catch (Exception $e) {
-            return $this->error([], 'An unexpected error occurred: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->error(
+                [],
+                'An unexpected error occurred: ' . $e->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
         
     }

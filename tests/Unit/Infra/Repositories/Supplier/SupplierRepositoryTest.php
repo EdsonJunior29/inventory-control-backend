@@ -9,7 +9,6 @@ use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Infra\Repositories\Supplier\SupplierRepository;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
 # php artisan test --filter=SupplierRepositoryTest
@@ -65,23 +64,16 @@ class SupplierRepositoryTest extends TestCase
         $this->assertEquals('Ativo', $result['data'][0]->name);
     }
 
-    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_returns_correct_entity
-    public function test_getSupplierById_returns_correct_entity()
+    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_returns_correct_resource
+    public function test_getSupplierById_returns_correct_resource()
     {
        $supplier = Supplier::factory()->create([
            'name' => 'Fornecedor para Busca'
        ]);
 
-       $entity = $this->repository->getSupplierById($supplier->id);
+       $supplierResouce = $this->repository->getSupplierById($supplier->id);
 
-       $this->assertEquals('Fornecedor para Busca', $entity->getName());
-    }
- 
-    # php artisan test --filter=SupplierRepositoryTest::test_getSupplierById_throws_exception_when_not_found
-    public function test_getSupplierById_throws_exception_when_not_found()
-    {
-        $this->expectException(SupplierNotFoundException::class);
-        $this->repository->getSupplierById(9999);
+       $this->assertEquals('Fornecedor para Busca', $supplierResouce->resource['name']);
     }
 
     # php artisan test --filter=SupplierRepositoryTest::test_deleteSupplierById_marks_as_deleted
@@ -141,10 +133,8 @@ class SupplierRepositoryTest extends TestCase
             'email' => 'updated@example.com'
         ];
 
-        // Act
         $result = $this->repository->update($supplier->id, $updateData);
 
-        // Assert
         $this->assertTrue($result);
         $updatedSupplier = Supplier::find($supplier->id);
         $this->assertEquals('Updated Name', $updatedSupplier->name);
@@ -154,14 +144,11 @@ class SupplierRepositoryTest extends TestCase
     # php artisan test --filter=SupplierRepositoryTest::test_update_throws_exception_when_supplier_not_found
     public function test_update_throws_exception_when_supplier_not_found()
     {
-        // Arrange
         $nonExistentId = 9999;
 
-        // Assert
         $this->expectException(SupplierNotFoundException::class);
         $this->expectExceptionMessage("Supplier with ID {$nonExistentId} not found");
 
-        // Act
         $this->repository->update($nonExistentId, ['name' => 'Test']);
     }
 

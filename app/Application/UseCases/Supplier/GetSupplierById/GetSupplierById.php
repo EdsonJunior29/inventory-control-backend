@@ -2,7 +2,6 @@
 
 namespace App\Application\UseCases\Supplier\GetSupplierById;
 
-use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Domain\IRepository\ISupplierRepository;
 
 class GetSupplierById
@@ -14,10 +13,8 @@ class GetSupplierById
         $this->repo = $iSupplierRepository;
     }
 
-    public function execute(int $supplierId): ?SupplierOutputDto
+    public function execute(int $supplierId)
     {
-        $supplier = $this->repo->getSupplierById($supplierId);
-
-        return SupplierOutputDto::fromEntity($supplier);
+        return $this->repo->getSupplierById($supplierId);
     }
 }

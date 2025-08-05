@@ -2,6 +2,7 @@
 
 namespace App\Infra\Repositories\Supplier;
 
+use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\Resources\Suppliers\SupplierResources;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
@@ -17,23 +18,15 @@ class SupplierRepository implements ISupplierRepository
         return PaginateResponse::format($suppliers, SupplierResources::class);
     }
 
-    public function getSupplierById(int $supplierId): ?EntitiesSupplier
+    public function getSupplierById(int $supplierId): ?SupplierByIdResources
     {
-        $model = Supplier::select(['id', 'name', 'email', 'phone', 'cnpj'])
-            ->where('id', $supplierId)
-            ->first();
+        $supplier = Supplier::find($supplierId);
 
-        if(!$model) {
-            throw new SupplierNotFoundException($supplierId);
+        if (!$supplier) {
+            return null;
         }
 
-        return new EntitiesSupplier(
-            $model->id,
-            $model->name,
-            $model->email,
-            $model->phone,
-            $model->cnpj
-        );
+        return new SupplierByIdResources($supplier);
     }
 
     public function deleteSupplierById(int $supplierId)

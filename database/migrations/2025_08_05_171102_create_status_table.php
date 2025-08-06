@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('status', function (Blueprint $table) {
+        Schema::create('statuses', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->max(255);
+            $table->string('name', 255);
             $table->string('description')->nullable();
             $table->timestamps();
-             $table->softDeletes();
+            $table->softDeletes();
         });
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Api\Http\Controllers\AuthController;
+use App\Api\Http\Controllers\ProductController;
 use App\Api\Http\Controllers\SupplierController;
 use App\Api\Http\Controllers\UserController;
 use App\Api\Http\Middleware\UserAccessValid;
@@ -18,6 +19,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/{id}', [SupplierController::class, 'deleteSupplierById'])->name('supplier.deleteById');
         Route::post('', [SupplierController::class, 'store'])->name('supplier.store');
         Route::put('/{id}', [SupplierController::class, 'update'])->name('supplier.update');
+    });
+
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('', [ProductController::class, 'getAllProducts'])->name('products.getAll');
+
     });
 
     Route::group(['prefix' => 'users'] , function () {

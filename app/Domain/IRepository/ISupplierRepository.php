@@ -4,7 +4,6 @@ namespace App\Domain\IRepository;
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
 use App\Application\Resources\Suppliers\SupplierByIdResources;
-use App\Domain\Entities\Supplier;
 
 interface ISupplierRepository
 {

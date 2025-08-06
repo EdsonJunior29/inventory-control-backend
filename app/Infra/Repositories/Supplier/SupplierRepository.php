@@ -4,7 +4,6 @@ namespace App\Infra\Repositories\Supplier;
 
 use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\Resources\Suppliers\SupplierResources;
-use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Domain\IRepository\ISupplierRepository;
 use App\Infra\Helper\Pagination\PaginateResponse;

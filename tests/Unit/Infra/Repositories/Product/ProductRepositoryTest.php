@@ -1,0 +1,53 @@
+<?php
+
+namespace Tests\Unit\Infra\Repositories\Product;
+
+use App\Domain\Entities\Product as EntitiesProduct;
+use App\Infra\Repositories\Product\ProductRepository;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Status;
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+# php artisan test --filter=ProductRepositoryTest
+class ProductRepositoryTest extends TestCase
+{
+    use RefreshDatabase;
+
+    private ProductRepository $repository;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->repository = new ProductRepository();
+    }
+
+    # php artisan test --filter=ProductRepositoryTest::test_returns_paginated_products_with_entities
+    public function test_returns_paginated_products_with_entities()
+    {
+        $category = Category::factory()->create(['name' => 'Eletronic']);
+        $status = Status::factory()->create(['name' => 'Active']);
+
+        Product::factory()->count(3)->create([
+            'category_id' => $category->id,
+            'status_id' => $status->id,
+        ]);
+
+        $result = $this->repository->getAllProducts();
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+        $this->assertCount(3, $result->items());
+        $this->assertInstanceOf(EntitiesProduct::class, $result->items()[0]);
+    }
+
+    # php artisan test --filter=ProductRepositoryTest::test_returns_empty_paginated_result_when_no_products_exist
+    public function test_returns_empty_paginated_result_when_no_products_exist()
+    {
+        $result = $this->repository->getAllProducts();
+
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+        $this->assertCount(0, $result->items());
+    }
+}

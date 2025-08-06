@@ -3,10 +3,8 @@
 declare(strict_types=1);
 
 use App\Application\DTOs\Suppliers\SupplierInputDto;
-use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\UseCases\Supplier\StoreSupplier\StoreSupplier;
-use App\Domain\Entities\Supplier;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

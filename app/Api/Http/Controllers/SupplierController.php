@@ -12,7 +12,6 @@ use App\Api\Traits\HttpResponses;
 use App\Application\DTOs\Suppliers\SupplierInputDto;
 use App\Application\UseCases\Supplier\StoreSupplier\StoreSupplier;
 use App\Application\UseCases\Supplier\UpdateSupplier\UpdateSupplier;
-use App\Domain\Exceptions\SupplierNotFoundException;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;

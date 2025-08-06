@@ -34,13 +34,12 @@ trait HttpResponses
 
     protected function error(
         $data,
-        $message = null,
+        $message = 'Error has occurred',
         $code = Response::HTTP_INTERNAL_SERVER_ERROR,
         $status = false
     ) {
         return response()->json([
             'status' => $status,
-            'status' => 'Error has occurred',
             'message' => $message,
             'data' => $data
         ], $code);

@@ -6,5 +6,5 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface IProductRepository
 {
-    public function getAllProducts(int $pagination = 10): LengthAwarePaginator;
+    public function getAllProducts(int $pagination = 10): ?LengthAwarePaginator;
 }

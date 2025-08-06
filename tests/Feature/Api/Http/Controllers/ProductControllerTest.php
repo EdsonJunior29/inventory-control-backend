@@ -149,6 +149,7 @@ class ProductControllerTest extends TestCase
 
     }
 
+    # php artisan test --filter=ProductControllerTest::test_it_should_return_empty_when_no_products_exist
     public function test_it_should_return_empty_when_no_products_exist()
     {
         $token = $this->authenticateUser();

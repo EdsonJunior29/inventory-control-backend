@@ -12,10 +12,6 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        if (Supplier::count() === 0) {
-            $this->call(SupplierSeeder::class);
-        }
-
         if (Category::count() === 0) {
             $this->call(CategorySeeder::class);
         }
@@ -25,9 +21,6 @@ class ProductSeeder extends Seeder
         }
         
         Product::factory()->count(20)->create([
-            'supplier_id' => function() {
-                return Supplier::inRandomOrder()->first()->id;
-            },
             'category_id' => function() {
                 return Category::inRandomOrder()->first()->id;
             },

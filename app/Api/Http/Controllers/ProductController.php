@@ -20,15 +20,23 @@ class ProductController extends Controller
 
     public function getAllProducts()
     {
-        $products = $this->getAllProductsUseCases->execute();
+        try {
+            $products = $this->getAllProductsUseCases->execute();
 
-        if (empty($products)) {
-            return $this->success([], 'Nenhum produto encontrado.');
+            if (empty($products)) {
+                return $this->success([], 'No products found.');
+            }
+
+            return $this->success(
+                PaginateResponse::format($products, ProductResource::class),
+                'Products retrieved successfully.'
+            );
+        } catch (\Throwable $th) {
+            $this->error(
+                '',
+                $th->getMessage()
+            );
         }
-
-        return $this->success(
-            PaginateResponse::format($products, ProductResource::class),
-            'Produtos listados com sucesso.'
-        );
+       
     }
 }

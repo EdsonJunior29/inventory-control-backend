@@ -13,8 +13,6 @@ class Status extends Model
 {
     use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
-    protected $table = 'status';
-
     /**
      * The attributes that are mass assignable.
      *

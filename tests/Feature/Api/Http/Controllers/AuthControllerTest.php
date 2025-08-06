@@ -124,7 +124,7 @@ class AuthControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_UNAUTHORIZED)
             ->assertJson([
-                'status' => 'Error has occurred',
+                'status' => false,
                 'message' => 'Credentials do not match',
                 'data' => '',
             ]

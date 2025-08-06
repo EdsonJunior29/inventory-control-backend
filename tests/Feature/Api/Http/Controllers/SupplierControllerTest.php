@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers;
 
 use App\Api\Http\Middleware\UserAccessValid;
-use App\Api\Http\Requests\StoreSupplierRequest;
 use App\Application\DTOs\Suppliers\SupplierInputDto;
 use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Application\UseCases\Supplier\GetSuppliers\GetAllSupplier;
@@ -16,7 +15,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Supplier;
 use App\Domain\Entities\Supplier as EntitiesSupplier;
 use App\Models\User;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;

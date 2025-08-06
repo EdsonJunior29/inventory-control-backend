@@ -26,7 +26,6 @@ class ProductFactory extends Factory
             'description' => substr($this->faker->paragraph, 0, 255),
             'quantity_in_stock' => $this->faker->numberBetween(0, 500),
             'serial_number' => $this->faker->unique()->bothify('SN-#####-???'),
-            'supplier_id' => Supplier::inRandomOrder()->first()->id,
             'date_of_acquisition' => $this->faker->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'status_id' => Status::factory(),
             'created_at' => now(),

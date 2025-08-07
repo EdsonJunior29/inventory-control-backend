@@ -18,20 +18,37 @@ class ProductRepository implements IProductRepository
 
         if ($paginated->isNotEmpty()) {
             $paginated->getCollection()->transform(function ($model) {
-                    return new EntitiesProduct(
-                        id: $model->id,
-                        name: $model->name,
-                        brand : $model->brand,
-                        category: new Category($model->category->name),
-                        description: $model->description,
-                        quantityInStock: $model->quantity_in_stock,
-                        serialNumber: $model->serial_number,
-                        dateOfAcquisition: new DateTime($model->date_of_acquisition),
-                        status: new Status($model->status->name),
-                    );
+                return $this->formatForEntitiesProduct($model);
             });
         }
 
         return $paginated;
+    }
+
+    public function getProductById(int $productId): ?EntitiesProduct
+    {
+        $product = Product::with(['category', 'status'])
+            ->find($productId);
+
+        if ($product) {
+            return $this->formatForEntitiesProduct($product);
+        }
+
+        return $product;
+    }
+
+    private function formatForEntitiesProduct(Product $product)
+    {
+        return new EntitiesProduct(
+            id: $product->id,
+            name: $product->name,
+            brand : $product->brand,
+            category: new Category($product->category->name),
+            description: $product->description,
+            quantityInStock: $product->quantity_in_stock,
+            serialNumber: $product->serial_number,
+            dateOfAcquisition: new DateTime($product->date_of_acquisition),
+            status: new Status($product->status->name),
+        );
     }
 }

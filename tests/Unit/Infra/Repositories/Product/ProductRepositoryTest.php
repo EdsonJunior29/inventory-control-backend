@@ -10,6 +10,7 @@ use App\Models\Status;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
+use PHPUnit\Framework\Attributes\TestWith;
 
 # php artisan test --filter=ProductRepositoryTest
 class ProductRepositoryTest extends TestCase
@@ -49,5 +50,33 @@ class ProductRepositoryTest extends TestCase
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertCount(0, $result->items());
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=ProductRepositoryTest::test_returns_product_by_id_with_entities
+    public function test_returns_product_by_id_with_entities(int $productId)
+    {
+        $category = Category::factory()->create(['name' => 'Eletronic']);
+        $status = Status::factory()->create(['name' => 'Active']);
+
+        $procuct = Product::factory()->count(3)->create([
+            'category_id' => $category->id,
+            'status_id' => $status->id,
+        ]);
+
+        $result = $this->repository->getProductById($productId);
+
+        $this->assertInstanceOf(EntitiesProduct::class, $result);
+        $this->assertEquals($procuct[0]->id, $result->getId());
+        $this->assertEquals($procuct[0]->name, $result->getName());
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=ProductRepositoryTest::test_returns_empty_product_by_id
+    public function test_returns_empty_product_by_id(int $productId)
+    {
+        $result = $this->repository->getProductById($productId);
+
+        $this->assertIsNotObject($result);
     }
 }

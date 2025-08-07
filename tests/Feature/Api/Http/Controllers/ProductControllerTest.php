@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers;
 
 use App\Api\Http\Middleware\UserAccessValid;
+use App\Application\UseCases\Products\GetProductById\GetProductById;
 use App\Application\UseCases\Products\GetProducts\GetAllProducts;
 use App\Domain\Entities\Product as EntitiesProduct;
 use App\Models\Category;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Mockery;
 use Tests\TestCase;
 use DateTime;
+use PHPUnit\Framework\Attributes\TestWith;
 use Illuminate\Http\Response;
 
 # php artisan test --filter=ProductControllerTest
@@ -52,7 +54,7 @@ class ProductControllerTest extends TestCase
     public function test_get_all_products_success()
     {
         $token = $this->authenticateUser();
-
+        
         $status = Status::factory()->create();
         $category = Category::factory()->create();
 
@@ -120,22 +122,20 @@ class ProductControllerTest extends TestCase
             'status',
             'message',
             'data' => [
-                'data' => [
-                    '*' => [
-                        'id',
-                        'name',
-                        'brand',
-                        'category',
-                        'description',
-                        'quantity_in_stock',
-                        'serial_number',
-                        'date_of_acquisition',
-                        'status',
-                    ]
+                '*' => [
+                    'id',
+                    'name',
+                    'brand',
+                    'category',
+                    'description',
+                    'quantity_in_stock',
+                    'serial_number',
+                    'date_of_acquisition',
+                    'status',
                 ],
-                'meta' => ['current_page', 'last_page', 'per_page', 'total'],
-                'links' => ['first', 'last', 'prev', 'next'],
-            ]
+            ],
+            'meta' => ['current_page', 'last_page', 'per_page', 'total'],
+            'links' => ['first', 'last', 'prev', 'next'],
         ]);
 
         $response->assertJsonFragment([
@@ -153,7 +153,7 @@ class ProductControllerTest extends TestCase
     public function test_it_should_return_empty_when_no_products_exist()
     {
         $token = $this->authenticateUser();
-
+        
         $mock = $this->createMock(GetAllProducts::class);
         $mock->method('execute')->willReturn([]);
 
@@ -163,14 +163,98 @@ class ProductControllerTest extends TestCase
             'Authorization' => 'Bearer ' . $token
         ])->getJson(route('products.getAll'));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
         $response->assertJson([
             'status' => true,
             'message' => 'No products found.',
             'data' => [],
         ]);
     }
+    
+    #[TestWith([1])]
+    # php artisan test --filter=ProductControllerTest::test_it_should_return_product_by_id_success
+    public function test_it_should_return_product_by_id_success(int $productId)
+    {
+        $token = $this->authenticateUser();
 
+        $status = Status::factory()->create();
+        $category = Category::factory()->create();
+
+        $productEntity = new EntitiesProduct(
+            id: $productId,
+            name: 'Product 1',
+            brand: 'Brand 1',
+            category: new \App\Domain\ValueObjects\Category(
+                categoryName: $category->name
+            ),
+            description: 'Description 1',
+            quantityInStock: 10,
+            serialNumber: 'SN001',
+            dateOfAcquisition: new DateTime('2023-01-01'),
+            status: new \App\Domain\ValueObjects\Status(
+                statusName: $status->name
+            )
+        );
+
+        $getProductByIdUseCaseMock = $this->createMock(GetProductById::class);
+        $getProductByIdUseCaseMock
+            ->method('execute')
+            ->with($productId)
+            ->willReturn($productEntity);
+
+        $this->app->instance(GetProductById::class, $getProductByIdUseCaseMock);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->getJson(route('products.getById', ['id' => $productId]));
+
+        $expectedJson = [
+            "status" => true,
+            "message" => "Product retrieved successfully.",
+            "data" => [
+                "id" => 1,
+                "name" => "Product 1",
+                "brand" => "Brand 1",
+                "category" => $category->name,
+                "description" => "Description 1",
+                "quantity_in_stock" => 10,
+                "serial_number" => "SN001",
+                "date_of_acquisition" => "01-01-2023",
+                "status" =>  $status->name,
+            ]
+        ];
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson($expectedJson);
+    }
+
+     #[TestWith([1])]
+    # php artisan test --filter=ProductControllerTest::test_it_should_return_no_product_by_id
+    public function test_it_should_return_no_product_by_id(int $productId)
+    {
+        $token = $this->authenticateUser();
+
+        $getProductByIdUseCaseMock = $this->createMock(GetProductById::class);
+        $getProductByIdUseCaseMock
+            ->method('execute')
+            ->with($productId)
+            ->willReturn(null);
+
+        $this->app->instance(GetProductById::class, $getProductByIdUseCaseMock);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->getJson(route('products.getById', ['id' => $productId]));
+
+        $expectedJson = [
+            "status" => true,
+            "message" => "No product found.",
+            "data" => []
+        ];
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJson($expectedJson);
+    }
 
     protected function tearDown(): void
     {

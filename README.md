@@ -1,6 +1,6 @@
 ## About Project
 
-📘 Projeto de Estudo - Laravel com Clear Architecture
+📘 Projeto de Estudo - Laravel com Clear Architecture</br>
 Este projeto está sendo desenvolvido com os seguintes recursos:
 
 PHP ^8.2
@@ -31,7 +31,7 @@ Este projeto tem como propósito o estudo e aplicação da Clear Architecture (A
 A proposta é criar uma base sólida e escalável, aplicando boas práticas de desenvolvimento e explorando recursos avançados do ecossistema Laravel.
 
 🇬🇧 English Version
-📘 Study Project - Laravel with Clean Architecture
+📘 Study Project - Laravel with Clean Architecture</br>
 This project is being developed using:
 
 PHP ^8.2

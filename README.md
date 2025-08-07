@@ -1,12 +1,65 @@
 ## About Project
 
-#### This project is being develop using:
-- PHP ^8.2
-- Laravel ^11
-- Laravel Sail 
-- Laravel Sanctum 
-- Database (MySql)
-- PHPUnit 11
+📘 Projeto de Estudo - Laravel com Clear Architecture
+Este projeto está sendo desenvolvido com os seguintes recursos:
+
+PHP ^8.2
+
+Laravel ^11
+
+Laravel Sail
+
+Laravel Sanctum
+
+MySQL (Banco de Dados)
+
+PHPUnit 11
+
+🎯 Objetivo
+Este projeto tem como propósito o estudo e aplicação da Clear Architecture (Arquitetura Limpa) com foco em:
+
+🧵 Fila de Processos (com RabbitMQ)
+
+⚡ Cache com Redis
+
+📈 Estudo de performance e otimizações
+
+⏰ Tarefas agendadas (Schedules)
+
+🔔 Disparo automático de notificações
+
+A proposta é criar uma base sólida e escalável, aplicando boas práticas de desenvolvimento e explorando recursos avançados do ecossistema Laravel.
+
+🇬🇧 English Version
+📘 Study Project - Laravel with Clean Architecture
+This project is being developed using:
+
+PHP ^8.2
+
+Laravel ^11
+
+Laravel Sail
+
+Laravel Sanctum
+
+MySQL (Database)
+
+PHPUnit 11
+
+🎯 Purpose
+This project aims to study and apply Clean Architecture with a focus on:
+
+🧵 Queue processing using RabbitMQ
+
+⚡ Caching with Redis
+
+📈 Performance and optimization studies
+
+⏰ Automated scheduled tasks
+
+🔔 Notification dispatch system
+
+The goal is to build a solid, scalable foundation following best development practices and exploring advanced Laravel features.
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 

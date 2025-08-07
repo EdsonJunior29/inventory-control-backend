@@ -19,6 +19,18 @@ trait HttpResponses
         ], $code);
     }
 
+    protected function successPaginated(
+    $data,
+    $message = 'Request was successful.',
+    $code = Response::HTTP_OK,
+    $status = true
+    ) {
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+        ] + $data, $code);
+    }
+
     protected function updated(
         $data,
         $message = 'Resource updated successfully.',

@@ -25,6 +25,8 @@ Este projeto tem como propósito o estudo e aplicação da Clear Architecture (A
 
 A proposta é criar uma base sólida e escalável, aplicando boas práticas de desenvolvimento e explorando recursos avançados do ecossistema Laravel.
 
+<hr>
+
 🇬🇧 English Version
 📘 Study Project - Laravel with Clean Architecture</br></br>
 This project is being developed using:

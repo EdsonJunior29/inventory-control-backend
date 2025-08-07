@@ -15,7 +15,7 @@ MySQL (Banco de Dados)
 
 PHPUnit 11
 
-🎯 Objetivo</br></br>
+🎯 Objetivo</br>
 Este projeto tem como propósito o estudo e aplicação da Clear Architecture (Arquitetura Limpa) com foco em:
 
 🧵 Fila de Processos (com RabbitMQ)
@@ -46,7 +46,7 @@ MySQL (Database)
 
 PHPUnit 11
 
-🎯 Purpose</br></br>
+🎯 Purpose</br>
 This project aims to study and apply Clean Architecture with a focus on:
 
 🧵 Queue processing using RabbitMQ

@@ -1,6 +1,6 @@
 ## About Project
 
-📘 Projeto de Estudo - Laravel com Clear Architecture</br>
+📘 Projeto de Estudo - Laravel com Clear Architecture</br></br>
 Este projeto está sendo desenvolvido com os seguintes recursos:
 
 PHP ^8.2
@@ -15,7 +15,7 @@ MySQL (Banco de Dados)
 
 PHPUnit 11
 
-🎯 Objetivo
+🎯 Objetivo</br></br>
 Este projeto tem como propósito o estudo e aplicação da Clear Architecture (Arquitetura Limpa) com foco em:
 
 🧵 Fila de Processos (com RabbitMQ)
@@ -31,7 +31,7 @@ Este projeto tem como propósito o estudo e aplicação da Clear Architecture (A
 A proposta é criar uma base sólida e escalável, aplicando boas práticas de desenvolvimento e explorando recursos avançados do ecossistema Laravel.
 
 🇬🇧 English Version
-📘 Study Project - Laravel with Clean Architecture</br>
+📘 Study Project - Laravel with Clean Architecture</br></br>
 This project is being developed using:
 
 PHP ^8.2
@@ -46,7 +46,7 @@ MySQL (Database)
 
 PHPUnit 11
 
-🎯 Purpose
+🎯 Purpose</br></br>
 This project aims to study and apply Clean Architecture with a focus on:
 
 🧵 Queue processing using RabbitMQ

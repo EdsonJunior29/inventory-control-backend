@@ -3,17 +3,12 @@
 📘 Projeto de Estudo - Laravel com Clear Architecture</br></br>
 Este projeto está sendo desenvolvido com os seguintes recursos:
 
-PHP ^8.2
-
-Laravel ^11
-
-Laravel Sail
-
-Laravel Sanctum
-
-MySQL (Banco de Dados)
-
-PHPUnit 11
+- PHP ^8.2
+- Laravel ^11
+- Laravel Sail 
+- Laravel Sanctum 
+- Database (MySql)
+- PHPUnit 11
 
 🎯 Objetivo</br>
 Este projeto tem como propósito o estudo e aplicação da Clear Architecture (Arquitetura Limpa) com foco em:
@@ -34,17 +29,12 @@ A proposta é criar uma base sólida e escalável, aplicando boas práticas de d
 📘 Study Project - Laravel with Clean Architecture</br></br>
 This project is being developed using:
 
-PHP ^8.2
-
-Laravel ^11
-
-Laravel Sail
-
-Laravel Sanctum
-
-MySQL (Database)
-
-PHPUnit 11
+- PHP ^8.2
+- Laravel ^11
+- Laravel Sail 
+- Laravel Sanctum 
+- Database (MySql)
+- PHPUnit 11
 
 🎯 Purpose</br>
 This project aims to study and apply Clean Architecture with a focus on:

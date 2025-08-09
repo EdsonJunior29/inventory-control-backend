@@ -10,4 +10,8 @@ interface IProductRepository
     public function getAllProducts(int $pagination = 10): ?LengthAwarePaginator;
 
     public function getProductById(int $productId): ?Product;
+
+    public function saveProduct(Product $product): ?Product;
+
+    public function existsBySerialNumber(string $serialNumber): bool;
 }

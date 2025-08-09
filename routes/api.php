@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'products'], function () {
         Route::get('', [ProductController::class, 'getAllProducts'])->name('products.getAll');
         Route::get('/{id}', [ProductController::class, 'getProductById'])->name('products.getById');
+        Route::post('/', [ProductController::class, 'store'])->name('products.create');
     });
 
     Route::group(['prefix' => 'users'] , function () {

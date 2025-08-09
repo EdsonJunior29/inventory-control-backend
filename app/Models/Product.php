@@ -21,7 +21,16 @@ class Product extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'brand',
+        'category_id',
+        'description',
+        'date_of_acquisition',
+        'quantity_in_stock',
+        'serial_number',
+        'status_id',
+    ];
 
     /**
      * The suppliers that the product Belongs To Many.

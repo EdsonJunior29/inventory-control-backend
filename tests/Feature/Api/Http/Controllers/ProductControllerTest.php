@@ -63,14 +63,16 @@ class ProductControllerTest extends TestCase
             name: 'Product 1',
             brand: 'Brand 1',
             category: new \App\Domain\ValueObjects\Category(
-                categoryName: $category->name
+                $category->id,
+                $category->name
             ),
             description: 'Description 1',
             quantityInStock: 10,
             serialNumber: 'SN001',
             dateOfAcquisition: new DateTime('2023-01-01'),
             status: new \App\Domain\ValueObjects\Status(
-                statusName: $status->name
+                $status->id,
+                $status->name
             )
         );
 
@@ -185,14 +187,16 @@ class ProductControllerTest extends TestCase
             name: 'Product 1',
             brand: 'Brand 1',
             category: new \App\Domain\ValueObjects\Category(
-                categoryName: $category->name
+                $category->id,
+                $category->name
             ),
             description: 'Description 1',
             quantityInStock: 10,
             serialNumber: 'SN001',
             dateOfAcquisition: new DateTime('2023-01-01'),
             status: new \App\Domain\ValueObjects\Status(
-                statusName: $status->name
+                $status->id,
+                $status->name
             )
         );
 

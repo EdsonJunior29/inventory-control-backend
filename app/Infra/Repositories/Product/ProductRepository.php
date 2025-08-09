@@ -3,7 +3,9 @@
 namespace App\Infra\Repositories\Product;
 
 use App\Domain\Entities\Product as EntitiesProduct;
+use App\Domain\IRepository\ICategoryRepository;
 use App\Domain\IRepository\IProductRepository;
+use App\Domain\IRepository\IStatusRepository;
 use App\Domain\ValueObjects\Category;
 use App\Domain\ValueObjects\Status;
 use App\Models\Product;
@@ -12,6 +14,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository implements IProductRepository
 {
+    public function __construct(
+        private ICategoryRepository $categoryRepository,
+        private IStatusRepository $statusRepository
+    ) {}
+
     public function getAllProducts(int $pagination = 10): ?LengthAwarePaginator
     {
         $paginated = Product::with(['category', 'status'])->paginate($pagination);
@@ -37,18 +44,57 @@ class ProductRepository implements IProductRepository
         return $product;
     }
 
+    public function saveProduct(EntitiesProduct $product): ?EntitiesProduct
+    {
+        $productCreated = Product::create([
+            'name' => $product->getName(),
+            'brand' => $product->getBrand(),
+            'category_id' => $product->getCategory()->getId(),
+            'description' => $product->getDescription() ?? "",
+            'quantity_in_stock' => $product->getQuantityInStock(),
+            'serial_number' => $product->getSerialNumber(),
+            'date_of_acquisition' => $product->getDateOfAcquisition(),
+            'status_id' => $product->getStatus()->getId()
+        ]);
+
+        $productCreated->load(['category', 'status']); // eager loading
+
+        return new EntitiesProduct(
+            $productCreated->id,
+            $productCreated->name,
+            $productCreated->brand,
+            new Category($productCreated->category->id, $productCreated->category->name),
+            $productCreated->description,
+            $productCreated->quantity_in_stock,
+            $productCreated->serial_number,
+            $productCreated->date_of_acquisition,
+            new Status($productCreated->status->id, $productCreated->status->name)
+        );
+    }
+
+    public function existsBySerialNumber(string $serialNumber): bool
+    {
+        return Product::where('serial_number', $serialNumber)->exists();
+    }
+
     private function formatForEntitiesProduct(Product $product)
     {
         return new EntitiesProduct(
             id: $product->id,
             name: $product->name,
             brand : $product->brand,
-            category: new Category($product->category->name),
+            category: new Category(
+                $product->category->id,
+                $product->category->name
+            ),
             description: $product->description,
             quantityInStock: $product->quantity_in_stock,
             serialNumber: $product->serial_number,
             dateOfAcquisition: new DateTime($product->date_of_acquisition),
-            status: new Status($product->status->name),
+            status: new Status(
+                $product->status->id, 
+                $product->status->name
+            ),
         );
     }
 }

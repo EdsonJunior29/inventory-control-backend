@@ -31,6 +31,20 @@ trait HttpResponses
         ] + $data, $code);
     }
 
+    protected function create(
+        $data,
+        $message = 'successfully created',
+        $code = Response::HTTP_CREATED,
+        $status = true
+    ) {
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data
+        ], $code);
+    }
+
+
     protected function updated(
         $data,
         $message = 'Resource updated successfully.',

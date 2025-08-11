@@ -2,7 +2,6 @@
 
 namespace App\Api\Http\Requests;
 
-use App\Api\Rules\CnpjRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest

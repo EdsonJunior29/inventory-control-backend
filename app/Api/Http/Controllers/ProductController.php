@@ -98,7 +98,7 @@ class ProductController extends Controller
         );
 
         $product = $this->storeProductUseCases->execute($inputDto);
-        
+
         return $this->create(
             new ProductResource($product),
             'Product successfully created.'

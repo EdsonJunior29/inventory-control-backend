@@ -60,6 +60,7 @@ class StoreProduct
             $category = $this->categoryRepository->getCategoryById($categoryId);
             $this->categoryCache[$categoryId] = new Category($category->id, $category->name);
         }
+        
         return $this->categoryCache[$categoryId];
     }
 

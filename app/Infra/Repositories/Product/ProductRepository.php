@@ -72,6 +72,20 @@ class ProductRepository implements IProductRepository
         );
     }
 
+    public function updateProduct(EntitiesProduct $productEntity)
+    {
+        Product::where('id', $productEntity->getId())->update([
+            'name' =>  $productEntity->getName(),
+            'brand' =>  $productEntity->getBrand(),
+            'category_id' =>  $productEntity->getCategory()?->getId(),
+            'description' =>  $productEntity->getDescription(),
+            'quantity_in_stock' => $productEntity->getQuantityInStock(),
+            'serial_number' => $productEntity->getSerialNumber(),
+            'date_of_acquisition' => $productEntity->getDateOfAcquisition()->format('Y-m-d H:i:s'),
+            'status_id' => $productEntity->getStatus()?->getId(),
+        ]);
+    }
+
     public function existsBySerialNumber(string $serialNumber): bool
     {
         return Product::where('serial_number', $serialNumber)->exists();

@@ -4,12 +4,14 @@ namespace App\Api\Http\Controllers;
 
 use App\Api\Helper\Pagination\PaginateResponse;
 use App\Api\Http\Requests\StoreProductRequest;
+use App\Api\Http\Requests\UpdateProductRequest;
 use App\Api\Http\Resources\ProductResource;
 use App\Api\Traits\HttpResponses;
 use App\Application\DTOs\Products\ProductInputDto;
 use App\Application\UseCases\Products\GetProductById\GetProductById;
 use App\Application\UseCases\Products\GetProducts\GetAllProducts;
 use App\Application\UseCases\Products\StoreProducts\StoreProduct;
+use App\Application\UseCases\Products\UpdateProductById\UpdateProductById;
 use DateTime;
 use Exception;
 use Illuminate\Http\Response;
@@ -21,15 +23,18 @@ class ProductController extends Controller
     private $getAllProductsUseCases;
     private $getProductByIdUseCases;
     private $storeProductUseCases;
+    private $updateProductByIdUseCases;
 
     public function __construct(
         GetAllProducts $getAllProducts,
         GetProductById $getProductById,
-        StoreProduct $storeProduct
+        StoreProduct $storeProduct,
+        UpdateProductById $updateProductById,
     ) {
         $this->getAllProductsUseCases = $getAllProducts;
         $this->getProductByIdUseCases = $getProductById;
         $this->storeProductUseCases = $storeProduct;
+        $this->updateProductByIdUseCases = $updateProductById;
     }
 
     public function getAllProducts()
@@ -103,6 +108,35 @@ class ProductController extends Controller
             new ProductResource($product),
             'Product successfully created.'
         );
+
+        } catch (\Throwable $th) {
+            return $this->error(
+                '',
+                $th->getMessage(),
+                $th->getCode()
+            );
+        }
+    }
+
+    public function update(int $productId, UpdateProductRequest $request)
+    {
+        try {
+            $inputDto = new ProductInputDto(
+                name: $request->name,
+                brand: $request->brand,
+                categoryId: $request->category_id,
+                quantityInStock: $request->quantity_in_stock,
+                statusId: $request->status_id,
+                dateOfAcquisition: new \DateTime($request->date_of_acquisition),
+                description: $request->description,
+            );
+            
+            $product = $this->updateProductByIdUseCases->execute($productId, $inputDto);
+
+            return $this->updated(
+               new ProductResource($product),
+               'Product updated successfully'
+            );
 
         } catch (\Throwable $th) {
             return $this->error(

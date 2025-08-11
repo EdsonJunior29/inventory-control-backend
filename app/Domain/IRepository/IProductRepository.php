@@ -13,5 +13,7 @@ interface IProductRepository
 
     public function saveProduct(Product $product): ?Product;
 
+    public function updateProduct(Product $product);
+
     public function existsBySerialNumber(string $serialNumber): bool;
 }

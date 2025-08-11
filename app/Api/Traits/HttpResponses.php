@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 trait HttpResponses 
 {
     protected function success(
-        $data,
+        $data = [],
         $message = 'Request was successful.', 
         $code = Response::HTTP_OK,
         $status = true
@@ -20,7 +20,7 @@ trait HttpResponses
     }
 
     protected function successPaginated(
-    $data,
+    $data = [],
     $message = 'Request was successful.',
     $code = Response::HTTP_OK,
     $status = true
@@ -32,7 +32,7 @@ trait HttpResponses
     }
 
     protected function create(
-        $data,
+        $data = [],
         $message = 'successfully created',
         $code = Response::HTTP_CREATED,
         $status = true
@@ -46,7 +46,7 @@ trait HttpResponses
 
 
     protected function updated(
-        $data,
+        $data = [],
         $message = 'Resource updated successfully.',
         $code = Response::HTTP_OK,
         $status = true
@@ -59,7 +59,7 @@ trait HttpResponses
     }
 
     protected function error(
-        $data,
+        $data = null,
         $message = 'Error has occurred',
         $code = Response::HTTP_INTERNAL_SERVER_ERROR,
         $status = false
@@ -83,7 +83,7 @@ trait HttpResponses
     }
 
     protected function unauthorized(
-        $data,
+        $data = null,
         $message = 'Unauthorized.', 
         $code = Response::HTTP_UNAUTHORIZED,
         $status = false

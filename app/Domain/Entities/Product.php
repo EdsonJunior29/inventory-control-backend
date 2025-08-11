@@ -67,6 +67,41 @@ class Product
         return $this->status;
     }
 
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    public function setBrand(string $brand)
+    {
+        $this->brand = $brand;
+    }
+
+    public function setCategory(Category $category)
+    {
+        $this->category = $category;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+    }
+
+    public function setQuantityInStock(string $quantityInStock)
+    {
+        $this->quantityInStock = $quantityInStock;
+    }
+
+    public function setDateOfAcquisition(DateTime $dateOfAcquisition)
+    {
+        $this->dateOfAcquisition = $dateOfAcquisition;
+    }
+    
+    public function setStatus(Status $status)
+    {
+        $this->status = $status;
+    }
+
     public static function createWithAutoSerial(
         string $name,
         string $brand,

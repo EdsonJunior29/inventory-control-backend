@@ -4,7 +4,7 @@ namespace App\Api\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreProductRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -43,7 +43,7 @@ class StoreProductRequest extends FormRequest
             'category_id.required' => 'The category_id field is required.',
             'category_id.integer' => 'The category_id field must be a integer.',
             'description.max' => 'The brand field may not be greater than :max characters.',
-            'quantity_in_stock.required' => 'The quantity_in_stock field is required.',
+            'quantity_in_stock.required' => 'The cquantity_in_stock field is required.',
             'quantity_in_stock.integer' => 'The quantity_in_stock field must be a integer.',
             'status_id.required' => 'The status_id field is required.',
             'status_id.integer' => 'The status_id field must be a integer.',

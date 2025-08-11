@@ -9,13 +9,13 @@ class ProductInputDto
     public function __construct(
         public string $name,
         public string $brand,
-        public ?int $categoryId = null,
+        public int $categoryId,
         public int $quantityInStock,
+        public int $statusId,
         public ?DateTime $dateOfAcquisition = null, 
-        public ?int $statusId = null, 
         public ?string $description = null,
     ) {
-        $this->dateOfAcquisition ??= new DateTime();
+        $this->dateOfAcquisition = $dateOfAcquisition ?? new DateTime();
         $this->description = $description ?? '';
     } 
 }

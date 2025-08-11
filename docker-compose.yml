@@ -23,10 +23,20 @@ services:
             - sail
         depends_on:
             - mysql
+            - redis
+
     redis:
         image: 'redis:alpine'
         ports:
-            - '${FORWARD_DB_PORT:-6379}:6379'
+            - '${FORWARD_REDIS_PORT:-6379}:6379' # Mudei para FORWARD_REDIS_PORT
+        networks:
+            - sail # Garantindo que está na mesma rede
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 1s
+            timeout: 3s
+            retries: 30
+
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -51,9 +61,12 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+
 networks:
     sail:
         driver: bridge
+        name: inventory-control-back_sail
+
 volumes:
     sail-mysql:
         driver: local

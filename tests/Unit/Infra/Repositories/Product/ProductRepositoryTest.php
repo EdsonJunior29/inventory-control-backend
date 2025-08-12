@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Infra\Repositories\Product;
 
-use App\Application\DTOs\Products\ProductInputDto;
 use App\Domain\Entities\Product as EntitiesProduct;
 use App\Domain\IRepository\ICategoryRepository;
 use App\Domain\IRepository\IStatusRepository;
@@ -18,6 +17,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery;
 use PHPUnit\Framework\Attributes\TestWith;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 # php artisan test --filter=ProductRepositoryTest
 class ProductRepositoryTest extends TestCase
@@ -91,7 +91,7 @@ class ProductRepositoryTest extends TestCase
     {
         $result = $this->repository->getProductById($productId);
 
-        $this->assertIsNotObject($result);
+        $this->assertNull($result);
     }
 
     # php artisan test --filter=ProductRepositoryTest::test_save_product_and_return_entities_product
@@ -132,5 +132,53 @@ class ProductRepositoryTest extends TestCase
             'category_id' => $category->id,
             'status_id' => $status->id
         ]);
+    }
+
+    # php artisan test --filter=ProductRepositoryTest::test_update_updates_product_and_returns_product_entity
+    public function test_update_updates_product_and_returns_product_entity()
+    {
+        $category = Category::factory()->create();
+        $status = Status::factory()->create();
+
+        $procuct = Product::factory()->count(3)->create([
+            'category_id' => $category->id,
+            'status_id' => $status->id,
+        ]);
+
+        $productModel = $procuct->first();
+
+        $productEntity = new EntitiesProduct(
+            id: $productModel->id,
+            name: 'Test Product',
+            brand: 'Test Brand',
+            category: new ValueObjectsCategory($category->id, $category->name),
+            description: 'Test description',
+            quantityInStock: 50,
+            serialNumber: 'SN123',
+            dateOfAcquisition: new \DateTime('2025-08-01 10:00:00'),
+            status: new ValueObjectsStatus($status->id, $status->name)
+        );
+
+        $this->repository->updateProduct($productEntity);
+
+        $updatedProduct = Product::find($productModel->id);
+
+        $this->assertEquals('Test Product', $updatedProduct->name);
+        $this->assertEquals('Test Brand', $updatedProduct->brand);
+        $this->assertEquals($category->id, $updatedProduct->category_id);
+        $this->assertEquals('Test description', $updatedProduct->description);
+        $this->assertEquals(50, $updatedProduct->quantity_in_stock);
+        $this->assertEquals('SN123', $updatedProduct->serial_number);
+        $this->assertEquals('2025-08-01 10:00:00', (new DateTime($updatedProduct->date_of_acquisition))->format('Y-m-d H:i:s'));
+        $this->assertEquals($status->id, $updatedProduct->status_id);
+    }
+
+    protected function tearDown(): void
+    {
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
+        Mockery::close();
+        parent::tearDown();
     }
 }

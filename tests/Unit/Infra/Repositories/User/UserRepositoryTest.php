@@ -10,6 +10,7 @@ use App\Models\User;
 use Database\Seeders\ProfilesAndUsersSeeder;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 # php artisan test --filter=UserRepositoryTest
 class UserRepositoryTest extends TestCase
@@ -111,5 +112,13 @@ class UserRepositoryTest extends TestCase
         $entityUser->setPassword(bcrypt('senha123'));
 
         $this->repository->updateUser($entityUser);
+    }
+
+    protected function tearDown(): void
+    {
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
+        parent::tearDown();
     }
 }

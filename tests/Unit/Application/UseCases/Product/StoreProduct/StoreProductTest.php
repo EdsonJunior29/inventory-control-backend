@@ -14,6 +14,7 @@ use App\Models\Status;
 use Tests\TestCase;
 use App\Domain\Entities\Product as EntitiesProduct;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 # php artisan test --filter=StoreProductTest
 class StoreProductTest extends TestCase
@@ -81,8 +82,8 @@ class StoreProductTest extends TestCase
             'Brand 1',
             $category->id,
             10,
-            new \DateTime('2023-01-01'),
             $status->id,
+            new \DateTime('2023-01-01'),
             'Description 1'
         );
         
@@ -97,6 +98,9 @@ class StoreProductTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
         Mockery::close();
         parent::tearDown();
     }

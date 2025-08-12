@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use Tests\TestCase;
 
@@ -97,5 +98,14 @@ class UserControllerTest extends TestCase
             ]);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    protected function tearDown(): void
+    {
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
+        Mockery::close();
+        parent::tearDown();
     }
 }

@@ -42,7 +42,7 @@ class ProductController extends Controller
         try {
             $products = $this->getAllProductsUseCases->execute();
 
-            if ($products->isEmpty()) {
+            if (empty($products)) {
                 return $this->success(
                     [],
                     'No products found.',
@@ -135,7 +135,7 @@ class ProductController extends Controller
 
             return $this->updated(
                new ProductResource($product),
-               'Product updated successfully'
+               'Product updated successfully.'
             );
 
         } catch (\Throwable $th) {

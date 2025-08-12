@@ -9,6 +9,7 @@ use App\Domain\Exceptions\SupplierNotFoundException;
 use App\Infra\Repositories\Supplier\SupplierRepository;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 # php artisan test --filter=SupplierRepositoryTest
@@ -152,4 +153,11 @@ class SupplierRepositoryTest extends TestCase
         $this->repository->update($nonExistentId, ['name' => 'Test']);
     }
 
+    protected function tearDown(): void
+    {
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
+        parent::tearDown();
+    }
 }

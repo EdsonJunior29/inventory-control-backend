@@ -25,12 +25,18 @@ class ProductResource extends JsonResource
             'id' => $this->resource->getId(),
             'name' => $this->resource->getName(),
             'brand' => $this->resource->getBrand(),
-            'category' => $this->resource->getCategory()->getName(),
+            'category' => method_exists($this->resource, 'getCategory') && $this->resource->getCategory() !== null
+                ? $this->resource->getCategory()->getName()
+                : null,
             'description' => $this->resource->getDescription(),
             'quantity_in_stock' => $this->resource->getQuantityInStock(),
             'serial_number' => $this->resource->getSerialNumber(),
-            'date_of_acquisition' => $this->resource->getDateOfAcquisition()->format('d-m-Y'),
-            'status' => $this->resource->getStatus()->getName(),
+            'date_of_acquisition' => $this->resource->getDateOfAcquisition() 
+                ? $this->resource->getDateOfAcquisition()->format('d-m-Y') 
+                : null,
+            'status' => method_exists($this->resource, 'getStatus') && $this->resource->getStatus() !== null
+                ? $this->resource->getStatus()->getName()
+                : null,
         ];
     }
 }

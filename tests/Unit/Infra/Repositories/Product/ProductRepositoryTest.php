@@ -173,6 +173,58 @@ class ProductRepositoryTest extends TestCase
         $this->assertEquals($status->id, $updatedProduct->status_id);
     }
 
+    # php artisan test --filter=ProductRepositoryTest::test_delete_product_and_returns_true
+    public function test_delete_product_and_returns_true()
+    {
+        $category = Category::factory()->create();
+        $status = Status::factory()->create();
+
+        $product = Product::factory()->count(3)->create([
+            'category_id' => $category->id,
+            'status_id' => $status->id,
+        ]);
+
+        $deleted = $this->repository->deleteById($product[0]->id);
+
+        $this->assertTrue($deleted);
+    }
+
+    # php artisan test --filter=ProductRepositoryTest::test_delete_product_and_returns_false
+    public function test_delete_product_and_returns_false()
+    {
+        $nonExistentId = 99999;
+
+        $deleted = $this->repository->deleteById($nonExistentId);
+
+        $this->assertFalse($deleted);
+    }
+
+    # php artisan test --filter=ProductRepositoryTest::test_product_exists_and_returns_true
+    public function test_product_exists_and_returns_true()
+    {
+        $category = Category::factory()->create();
+        $status = Status::factory()->create();
+
+        $product = Product::factory()->count(3)->create([
+            'category_id' => $category->id,
+            'status_id' => $status->id,
+        ]);
+
+        $exists = $this->repository->productExists($product[0]->id);
+
+        $this->assertTrue($exists);
+    }
+
+    # php artisan test --filter=ProductRepositoryTest::test_product_not_exists_and_returns_false
+    public function test_product_not_exists_and_returns_false()
+    {
+        $nonExistentId = 99999;
+
+        $exists = $this->repository->productExists($nonExistentId);
+
+        $this->assertFalse($exists);
+    }
+
     protected function tearDown(): void
     {
         if (DB::transactionLevel() > 0) {

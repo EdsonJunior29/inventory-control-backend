@@ -15,5 +15,9 @@ interface IProductRepository
 
     public function updateProduct(Product $product);
 
+    public function productExists(int $productId): bool;
+
+    public function deleteById(int $id): bool;
+
     public function existsBySerialNumber(string $serialNumber): bool;
 }

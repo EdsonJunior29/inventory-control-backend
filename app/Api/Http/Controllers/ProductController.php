@@ -8,10 +8,12 @@ use App\Api\Http\Requests\UpdateProductRequest;
 use App\Api\Http\Resources\ProductResource;
 use App\Api\Traits\HttpResponses;
 use App\Application\DTOs\Products\ProductInputDto;
+use App\Application\UseCases\Products\DeleteProductById\DeleteProductById;
 use App\Application\UseCases\Products\GetProductById\GetProductById;
 use App\Application\UseCases\Products\GetProducts\GetAllProducts;
 use App\Application\UseCases\Products\StoreProducts\StoreProduct;
 use App\Application\UseCases\Products\UpdateProductById\UpdateProductById;
+use App\Domain\Exceptions\InternalServerErrorException;
 use DateTime;
 use Exception;
 use Illuminate\Http\Response;
@@ -24,17 +26,20 @@ class ProductController extends Controller
     private $getProductByIdUseCases;
     private $storeProductUseCases;
     private $updateProductByIdUseCases;
+    private $deleteProductByIdUseCases;
 
     public function __construct(
         GetAllProducts $getAllProducts,
         GetProductById $getProductById,
         StoreProduct $storeProduct,
         UpdateProductById $updateProductById,
+        DeleteProductById $deleteProductById
     ) {
         $this->getAllProductsUseCases = $getAllProducts;
         $this->getProductByIdUseCases = $getProductById;
         $this->storeProductUseCases = $storeProduct;
         $this->updateProductByIdUseCases = $updateProductById;
+        $this->deleteProductByIdUseCases = $deleteProductById;
     }
 
     public function getAllProducts()
@@ -143,6 +148,25 @@ class ProductController extends Controller
                 '',
                 $th->getMessage(),
                 $th->getCode()
+            );
+        }
+    }
+
+    public function delete(int $productId)
+    {
+        try {
+           $this->deleteProductByIdUseCases->execute($productId);
+
+            return $this->success(
+                [], 
+                '',
+                Response::HTTP_NO_CONTENT
+            );
+        } catch (Exception $e) {
+            return $this->error(
+                [], 
+                $e->getMessage(),
+                $e->getCode()
             );
         }
     }

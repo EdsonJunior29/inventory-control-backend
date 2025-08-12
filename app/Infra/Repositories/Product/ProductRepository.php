@@ -101,6 +101,16 @@ class ProductRepository implements IProductRepository
         ]);
     }
 
+    public function productExists(int $productId): bool
+    {
+        return Product::where('id', $productId)->exists();
+    }
+
+    public function deleteById(int $id): bool
+    {
+        return Product::destroy($id) > 0;
+    }
+
     public function existsBySerialNumber(string $serialNumber): bool
     {
         return Product::where('serial_number', $serialNumber)->exists();

@@ -6,12 +6,14 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Api\Http\Middleware\UserAccessValid;
 use App\Application\DTOs\Products\ProductInputDto;
+use App\Application\UseCases\Products\DeleteProductById\DeleteProductById;
 use App\Application\UseCases\Products\GetProductById\GetProductById;
 use App\Application\UseCases\Products\GetProducts\GetAllProducts;
 use App\Application\UseCases\Products\StoreProducts\StoreProduct;
 use App\Application\UseCases\Products\UpdateProductById\UpdateProductById;
 use App\Domain\Entities\Product as EntitiesProduct;
 use App\Domain\Exceptions\MinimumQuantityInStockException;
+use App\Domain\IRepository\IProductRepository;
 use App\Models\Category;
 use App\Models\Status;
 use App\Models\User;
@@ -20,6 +22,7 @@ use Illuminate\Http\Request;
 use Mockery;
 use Tests\TestCase;
 use DateTime;
+use Exception;
 use PHPUnit\Framework\Attributes\TestWith;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -509,6 +512,65 @@ class ProductControllerTest extends TestCase
                 'status' => false,
                 'message' => 'Minimum acceptable stock quantity is 1',
                 'data' => ''
+            ]);
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=ProductControllerTest::test_delete_product_by_id_return_success
+    public function test_delete_product_by_id_return_success(int $productId)
+    {
+        $token = $this->authenticateUser();
+
+        $productRepositoryMock = Mockery::mock(IProductRepository::class);
+
+        $deleteProductByIdMock = new DeleteProductById($productRepositoryMock);
+
+        $productRepositoryMock
+            ->shouldReceive('productExists')
+            ->with($productId)
+            ->andReturn(true);
+
+        $productRepositoryMock
+            ->shouldReceive('deleteById')
+            ->with($productId)
+            ->andReturn(true);
+
+        $this->app->instance(DeleteProductById::class, $deleteProductByIdMock);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->deleteJson(route('products.delete', ['id' => $productId]));
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT)
+            ->assertNoContent();
+    }
+
+    #[TestWith([1])]
+    # php artisan test --filter=ProductControllerTest::test_delete_product_throw_exception
+    public function test_delete_product_throw_exception(int $productId)
+    {
+        $token = $this->authenticateUser();
+
+        $productDeleteUseCases = Mockery::mock(DeleteProductById::class);
+
+        $productDeleteUseCases->shouldReceive('execute')
+            ->with($productId)
+            ->andThrow(new Exception(
+                "Product not found.",
+                Response::HTTP_NOT_FOUND
+            ));
+
+        $this->app->instance(DeleteProductById::class, $productDeleteUseCases);
+        
+         $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->deleteJson(route('products.delete', ['id' => $productId]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJson([
+                'status' => false,
+                'message' => "Product not found.",
+                'data' => []
             ]);
     }
 

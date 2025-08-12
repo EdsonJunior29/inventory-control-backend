@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Application\DTOs;
+namespace Tests\Unit\Application\DTOs\Suppliers;
 
 use App\Application\DTOs\Suppliers\SupplierOutputDto;
 use App\Domain\Entities\Supplier;

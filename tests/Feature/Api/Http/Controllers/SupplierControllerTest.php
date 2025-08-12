@@ -18,6 +18,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\TestWith;
 use Mockery;
 use Tests\TestCase;
@@ -435,6 +436,9 @@ class SupplierControllerTest extends TestCase
 
     protected function tearDown(): void
     {
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
         Mockery::close();
         parent::tearDown();
     }

@@ -3,10 +3,19 @@
 namespace App\Api\Http\Controllers;
 
 use App\Api\Helper\Pagination\PaginateResponse;
+use App\Api\Http\Requests\StoreProductRequest;
+use App\Api\Http\Requests\UpdateProductRequest;
 use App\Api\Http\Resources\ProductResource;
 use App\Api\Traits\HttpResponses;
+use App\Application\DTOs\Products\ProductInputDto;
+use App\Application\UseCases\Products\DeleteProductById\DeleteProductById;
 use App\Application\UseCases\Products\GetProductById\GetProductById;
 use App\Application\UseCases\Products\GetProducts\GetAllProducts;
+use App\Application\UseCases\Products\StoreProducts\StoreProduct;
+use App\Application\UseCases\Products\UpdateProductById\UpdateProductById;
+use App\Domain\Exceptions\InternalServerErrorException;
+use DateTime;
+use Exception;
 use Illuminate\Http\Response;
 
 class ProductController extends Controller
@@ -15,13 +24,22 @@ class ProductController extends Controller
 
     private $getAllProductsUseCases;
     private $getProductByIdUseCases;
+    private $storeProductUseCases;
+    private $updateProductByIdUseCases;
+    private $deleteProductByIdUseCases;
 
     public function __construct(
         GetAllProducts $getAllProducts,
-        GetProductById $getProductById
+        GetProductById $getProductById,
+        StoreProduct $storeProduct,
+        UpdateProductById $updateProductById,
+        DeleteProductById $deleteProductById
     ) {
         $this->getAllProductsUseCases = $getAllProducts;
         $this->getProductByIdUseCases = $getProductById;
+        $this->storeProductUseCases = $storeProduct;
+        $this->updateProductByIdUseCases = $updateProductById;
+        $this->deleteProductByIdUseCases = $deleteProductById;
     }
 
     public function getAllProducts()
@@ -41,10 +59,11 @@ class ProductController extends Controller
                 PaginateResponse::format($products, ProductResource::class),
                 'Products retrieved successfully.'
             );
-        } catch (\Throwable $th) {
-            $this->error(
+        } catch (Exception $e) {            
+            return $this->error(
                 '',
-                $th->getMessage()
+                $e->getMessage(),
+                $e->getCode()
             );
         }
     }
@@ -68,11 +87,87 @@ class ProductController extends Controller
             );
 
         } catch (\Throwable $th) {
-            $this->error(
+            return $this->error(
                 '',
                 $th->getMessage()
             );
         }
-        
+    }
+
+    public function store(StoreProductRequest $request)
+    {
+        try {
+            $inputDto = new ProductInputDto(
+            name: $request->name,
+            brand: $request->brand,
+            categoryId: $request->category_id,
+            quantityInStock: $request->quantity_in_stock,
+            dateOfAcquisition: new \DateTime($request->date_of_acquisition),
+            statusId: $request->status_id,
+            description: $request->description,
+        );
+
+        $product = $this->storeProductUseCases->execute($inputDto);
+
+        return $this->create(
+            new ProductResource($product),
+            'Product successfully created.'
+        );
+
+        } catch (\Throwable $th) {
+            return $this->error(
+                '',
+                $th->getMessage(),
+                $th->getCode()
+            );
+        }
+    }
+
+    public function update(int $productId, UpdateProductRequest $request)
+    {
+        try {
+            $inputDto = new ProductInputDto(
+                name: $request->name,
+                brand: $request->brand,
+                categoryId: $request->category_id,
+                quantityInStock: $request->quantity_in_stock,
+                statusId: $request->status_id,
+                dateOfAcquisition: new \DateTime($request->date_of_acquisition),
+                description: $request->description,
+            );
+            
+            $product = $this->updateProductByIdUseCases->execute($productId, $inputDto);
+
+            return $this->updated(
+               new ProductResource($product),
+               'Product updated successfully.'
+            );
+
+        } catch (\Throwable $th) {
+            return $this->error(
+                '',
+                $th->getMessage(),
+                $th->getCode()
+            );
+        }
+    }
+
+    public function delete(int $productId)
+    {
+        try {
+           $this->deleteProductByIdUseCases->execute($productId);
+
+            return $this->success(
+                [], 
+                '',
+                Response::HTTP_NO_CONTENT
+            );
+        } catch (Exception $e) {
+            return $this->error(
+                [], 
+                $e->getMessage(),
+                $e->getCode()
+            );
+        }
     }
 }

@@ -11,7 +11,7 @@ class PaginateResponse
         string $resourceClass,
     ) {
         return [
-            'data' => $resourceClass::collection($paginator->items()),
+            'data' => $resourceClass::collection(collect($paginator->items())),
             'meta' => [
                 'current_page' => $paginator->currentPage(),
                 'per_page' => $paginator->perPage(),

@@ -6,6 +6,7 @@ use App\Application\Resources\Suppliers\SupplierByIdResources;
 use App\Application\UseCases\Supplier\GetSupplierById\GetSupplierById;
 use App\Domain\IRepository\ISupplierRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\TestWith;
 use Tests\TestCase;
 
@@ -46,8 +47,11 @@ class GetSupplierByIdTest extends TestCase
 
     protected function tearDown(): void
     {
-      Mockery::close();
-      parent::tearDown();
+        if (DB::transactionLevel() > 0) {
+            DB::rollBack();
+        }
+        Mockery::close();
+        parent::tearDown();
     }
     
 }

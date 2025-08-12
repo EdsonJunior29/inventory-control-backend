@@ -12,7 +12,8 @@ use Mockery;
 
 class UpdateSupplierTest extends TestCase
 {
-
+    use RefreshDatabase;
+    
     private $supplierRepositoryMock;
     private $updateSupplierUseCase;
 

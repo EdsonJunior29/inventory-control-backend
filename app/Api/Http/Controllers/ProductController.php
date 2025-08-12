@@ -42,7 +42,7 @@ class ProductController extends Controller
         try {
             $products = $this->getAllProductsUseCases->execute();
 
-            if (empty($products)) {
+            if ($products->isEmpty()) {
                 return $this->success(
                     [],
                     'No products found.',

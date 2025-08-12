@@ -21,15 +21,30 @@ class ProductRepository implements IProductRepository
 
     public function getAllProducts(int $pagination = 10): ?LengthAwarePaginator
     {
-        $paginated = Product::with(['category', 'status'])->paginate($pagination);
+        $products = Product::with([
+            'category:id,name',
+            'status:id,name'
+        ])->select([
+            'id',
+            'name',
+            'brand',
+            'category_id',
+            'status_id',
+            'quantity_in_stock',
+            'serial_number',
+            'date_of_acquisition',
+            'description'
+        ])->paginate($pagination);
 
-        if ($paginated->isNotEmpty()) {
-            $paginated->getCollection()->transform(function ($model) {
-                return $this->formatForEntitiesProduct($model);
+        if ( $products->isNotEmpty()) {
+            $transformed = $products->getCollection()->transform(function ($model) {
+            return $this->formatForEntitiesProduct($model);
             });
+
+            $products->setCollection($transformed);
         }
 
-        return $paginated;
+        return $products;
     }
 
     public function getProductById(int $productId): ?EntitiesProduct

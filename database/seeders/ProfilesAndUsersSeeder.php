@@ -37,14 +37,14 @@ class ProfilesAndUsersSeeder extends Seeder
         }
     }
 
-    private function createUser($name, $email, $password,  $profileId)
+    private function createUser($name, $email, $password, $profileId)
     {
         $user = User::create([
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
         ]);
-
+        
         $user->profiles()->attach($profileId);
 
         return $user;

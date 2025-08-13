@@ -33,7 +33,6 @@ class Profile extends Authenticatable
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'profiles_users', 'users_id', 'profiles_id');
+        return $this->belongsToMany(User::class, 'profiles_users', 'profiles_id', 'users_id');
     }
-
 }

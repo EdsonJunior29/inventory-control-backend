@@ -89,16 +89,18 @@ class ProductRepository implements IProductRepository
 
     public function updateProduct(EntitiesProduct $productEntity)
     {
-        Product::where('id', $productEntity->getId())->update([
-            'name' =>  $productEntity->getName(),
-            'brand' =>  $productEntity->getBrand(),
-            'category_id' =>  $productEntity->getCategory()?->getId(),
-            'description' =>  $productEntity->getDescription(),
-            'quantity_in_stock' => $productEntity->getQuantityInStock(),
-            'serial_number' => $productEntity->getSerialNumber(),
-            'date_of_acquisition' => $productEntity->getDateOfAcquisition()->format('Y-m-d H:i:s'),
-            'status_id' => $productEntity->getStatus()?->getId(),
-        ]);
+        $product = Product::find($productEntity->getId());
+
+        $product->name = $productEntity->getName();
+        $product->brand = $productEntity->getBrand();
+        $product->category_id = $productEntity->getCategory()?->getId();
+        $product->description = $productEntity->getDescription();
+        $product->quantity_in_stock = $productEntity->getQuantityInStock();
+        $product->serial_number = $productEntity->getSerialNumber();
+        $product->date_of_acquisition = $productEntity->getDateOfAcquisition()->format('Y-m-d H:i:s');
+        $product->status_id = $productEntity->getStatus()?->getId();
+
+        $product->save();
     }
 
     public function productExists(int $productId): bool

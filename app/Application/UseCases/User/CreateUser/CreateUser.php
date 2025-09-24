@@ -2,6 +2,7 @@
 
 namespace App\Application\UseCases\User\CreateUser;
 
+use App\Application\Contracts\User\ICreateUser;
 use App\Domain\Enums\Profiles;
 use App\Domain\Entities\User as EntitiesUser;
 use App\Domain\Exceptions\CreateUserException;
@@ -9,7 +10,7 @@ use App\Domain\IRepository\IUserRepository;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class CreateUser
+class CreateUser implements ICreateUser
 {
     protected $repo;
 

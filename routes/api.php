@@ -29,8 +29,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/{id}', [ProductController::class, 'delete'])->name('products.delete');
     });
 
-    Route::group(['prefix' => 'users'] , function () {
-        Route::post('', [UserController::class, 'store'])->middleware(UserAccessValid::class);
+    Route::group(['prefix' => 'users', 'middleware' => [UserAccessValid::class]] , function () {
+        Route::post('', [UserController::class, 'store']);
         Route::put('/{id}', [UserController::class, 'update']);
     });
 });

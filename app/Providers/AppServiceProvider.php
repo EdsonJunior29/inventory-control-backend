@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Application\Contracts\User\ICreateUser;
+use App\Application\Contracts\User\IUpdateUser;
+use App\Application\UseCases\User\CreateUser\CreateUser;
+use App\Application\UseCases\User\UpdateUser\UpdateUser;
 use App\Domain\IRepository\ICategoryRepository;
 use App\Domain\IRepository\IProductRepository;
 use App\Domain\IRepository\IStatusRepository;
@@ -21,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(ICreateUser::class, CreateUser::class);
+        $this->app->bind(IUpdateUser::class, UpdateUser::class);
+
         $this->app->bind(IUserRepository::class, UserRepository::class);
         $this->app->bind(ISupplierRepository::class, SupplierRepository::class);
         $this->app->bind(IProductRepository::class, ProductRepository::class);

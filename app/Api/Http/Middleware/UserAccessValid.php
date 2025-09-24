@@ -34,11 +34,12 @@ class UserAccessValid
                 'Email is required',
             );
         }
+        $userAuth = Auth::user();
 
         $getUserByEmail = app(GetUserByEmail::class);
-        $user = $getUserByEmail->execute(new GetUserByEmailInputData($request->email));
+        $adminUser = $getUserByEmail->execute(new GetUserByEmailInputData($userAuth->email));
 
-        if ($user->profiles->first()->id !== Profiles::ADMIN->value) {
+        if (!$adminUser->profiles->contains('id', Profiles::ADMIN->value)) {
             return $this->unauthorized(
                 data :  'Unauthorized',
                 message : 'You do not have access to this resource',

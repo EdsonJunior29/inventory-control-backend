@@ -2,14 +2,14 @@
 
 namespace App\Api\Http\Controllers;
 
-use App\Application\UseCases\User\CreateUser\CreateUser;
 use App\Application\UseCases\User\CreateUser\CreateUserInputData;
 use App\Domain\Exceptions\CreateUserException;
 use App\Api\Http\Requests\AuthStoreUserRequest;
 use App\Api\Http\Requests\UpdateUserRequest;
 use App\Api\Traits\HttpResponses;
+use App\Application\Contracts\User\ICreateUser;
+use App\Application\Contracts\User\IUpdateUser;
 use App\Application\UseCases\User\UpdateUser\UpdateUserInputData;
-use App\Application\UseCases\User\UpdateUser\UpdateUser;
 use App\Domain\Exceptions\UpdateUserException;
 use Illuminate\Http\Response;
 
@@ -17,13 +17,13 @@ class UserController extends Controller
 {
     use HttpResponses;
 
-    private CreateUser $createUserUseCase;
-    private UpdateUser $updateUserUseCase;
+    private ICreateUser $iCreateUser;
+    private IUpdateUser $iUpdateUser;
 
-    public function __construct(CreateUser $createUserUseCase, UpdateUser $updateUserUseCase)
+    public function __construct(ICreateUser $iCreateUserUseCase, IUpdateUser $iUpdateUser)
     {
-        $this->createUserUseCase = $createUserUseCase;
-        $this->updateUserUseCase = $updateUserUseCase;
+        $this->iCreateUser = $iCreateUserUseCase;
+        $this->iUpdateUser = $iUpdateUser;
     }
 
     public function store(AuthStoreUserRequest $request)
@@ -37,7 +37,7 @@ class UserController extends Controller
                 $request['password']
             );
             
-            $this->createUserUseCase->execute($createUserInputData);
+            $this->iCreateUser->execute($createUserInputData);
         } catch (CreateUserException $e) {
             return $this->error(
                 [],
@@ -64,7 +64,7 @@ class UserController extends Controller
                 $request['email']
             );
             
-            $this->updateUserUseCase->execute($updateUserInputData);
+            $this->iUpdateUser->execute($updateUserInputData);
         } catch (UpdateUserException $e) {
             return $this->error(
                 [],

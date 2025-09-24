@@ -2,12 +2,13 @@
 
 namespace App\Application\UseCases\User\UpdateUser;
 
+use App\Application\Contracts\User\IUpdateUser;
 use App\Application\UseCases\User\UpdateUser\UpdateUserInputData;
 use App\Domain\Entities\User;
 use App\Domain\Exceptions\UpdateUserException;
 use App\Domain\IRepository\IUserRepository;
 
-class UpdateUser
+class UpdateUser implements IUpdateUser
 {
     protected $repo;
 
